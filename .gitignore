@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Model weights (large files)
+models/qwen-tpq-sft/
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.onnx
+
+# Training outputs
+outputs/
+runs/
+wandb/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data splits (generated)
+data/train.jsonl
+data/validation.jsonl
+data/test.jsonl
+
+# Evaluation results (generated)
+evaluation/results.json
+evaluation/results.csv

@@ -1,0 +1,15 @@
+# ============================================================
+# TPQ AI Assistant - Training Requirements
+# ============================================================
+# Install: pip install -r requirements-training.txt
+# Requires: NVIDIA GPU with CUDA support
+# ============================================================
+
+unsloth
+torch
+transformers
+datasets
+trl
+peft
+accelerate
+bitsandbytes

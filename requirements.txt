@@ -1,0 +1,23 @@
+# ============================================================
+# TPQ AI Assistant - Requirements (All)
+# ============================================================
+# This file includes all dependencies for training + inference.
+# For training only: pip install -r requirements-training.txt
+# For inference only: pip install -r requirements-inference.txt
+# ============================================================
+
+# --- Training ---
+unsloth
+torch
+transformers
+datasets
+trl
+peft
+accelerate
+bitsandbytes
+
+# --- Inference & API ---
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv

@@ -1,0 +1,13 @@
+# ============================================================
+# TPQ AI Assistant - Inference & API Requirements
+# ============================================================
+# Install: pip install -r requirements-inference.txt
+# ============================================================
+
+torch
+transformers
+peft
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TPQ AI Assistant — Chatbot untuk membantu pertanyaan administrasi Taman Pendidikan Al-Quran (TPQ). Powered by fine-tuned Qwen2.5 with Unsloth + LoRA.">
+    <title>TPQ AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="chat-header" id="chat-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div class="header-text">
+                    <h1>TPQ AI Assistant</h1>
+                    <p class="header-subtitle">Taman Pendidikan Al-Quran</p>
+                </div>
+                <div class="header-status" id="header-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Messages Area -->
+        <main class="chat-messages" id="chat-messages">
+            <!-- Welcome message -->
+            <div class="welcome-container" id="welcome-container">
+                <div class="welcome-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <h2>Assalamu'alaikum! 👋</h2>
+                <p>Saya TPQ AI Assistant, siap membantu Anda dengan pertanyaan seputar administrasi Taman Pendidikan Al-Quran.</p>
+                <div class="suggestion-chips">
+                    <button class="chip" onclick="sendSuggestion('Bagaimana cara mendaftar di TPQ?')">📝 Cara mendaftar</button>
+                    <button class="chip" onclick="sendSuggestion('Bagaimana cara melihat nilai anak?')">📊 Lihat nilai</button>
+                    <button class="chip" onclick="sendSuggestion('Bagaimana cara membayar SPP?')">💰 Bayar SPP</button>
+                    <button class="chip" onclick="sendSuggestion('Apa jadwal belajar di TPQ?')">📅 Jadwal belajar</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="chat-input-area" id="chat-input-area">
+            <form class="input-form" id="chat-form" onsubmit="handleSubmit(event)">
+                <div class="input-wrapper">
+                    <textarea
+                        id="message-input"
+                        placeholder="Ketik pertanyaan Anda..."
+                        rows="1"
+                        maxlength="1000"
+                        aria-label="Ketik pertanyaan Anda"
+                    ></textarea>
+                    <button type="submit" class="send-button" id="send-button" aria-label="Kirim pesan" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="char-count" id="char-count">0 / 1000</span>
+                    <span class="powered-by">Powered by Qwen + Unsloth + LoRA</span>
+                </div>
+            </form>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
