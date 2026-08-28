@@ -164,6 +164,8 @@ def generate_response(
     attention_mask = inputs["attention_mask"].to(model.device)
 
     # Generate
+    model.generation_config.max_length = None
+
     with torch.no_grad():
         outputs = model.generate(
             input_ids=input_ids,
