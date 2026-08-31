@@ -1,212 +1,212 @@
 [
-    {
-        "id": 1,
-        "question": "Apa persyaratan untuk mendaftar di TPQ?",
-        "category": "informasi_umum",
-        "expected_keywords": ["formulir", "pendaftaran", "akta", "foto", "kartu keluarga"],
-        "is_in_domain": true
-    },
-    {
-        "id": 2,
-        "question": "Bagaimana saya bisa mengecek kehadiran anak di TPQ?",
-        "category": "absensi",
-        "expected_keywords": ["absensi", "kehadiran", "menu", "sistem", "login"],
-        "is_in_domain": true
-    },
-    {
-        "id": 3,
-        "question": "Kapan nilai ujian semester akan keluar?",
-        "category": "nilai",
-        "expected_keywords": ["nilai", "ujian", "semester", "minggu"],
-        "is_in_domain": true
-    },
-    {
-        "id": 4,
-        "question": "Metode pembayaran apa saja yang tersedia untuk SPP?",
-        "category": "pembayaran",
-        "expected_keywords": ["pembayaran", "transfer", "bank", "tunai", "administrasi"],
-        "is_in_domain": true
-    },
-    {
-        "id": 5,
-        "question": "Bagaimana cara melihat pengumuman terbaru dari TPQ?",
-        "category": "pengumuman",
-        "expected_keywords": ["pengumuman", "menu", "sistem", "administrasi"],
-        "is_in_domain": true
-    },
-    {
-        "id": 6,
-        "question": "Data apa saja yang bisa saya lihat di profil anak?",
-        "category": "data_santri",
-        "expected_keywords": ["profil", "biodata", "nama", "kelas", "nilai", "absensi"],
-        "is_in_domain": true
-    },
-    {
-        "id": 7,
-        "question": "Bagaimana mengubah nomor telepon yang terdaftar?",
-        "category": "wali_santri",
-        "expected_keywords": ["profil", "ubah", "kontak", "nomor", "telepon"],
-        "is_in_domain": true
-    },
-    {
-        "id": 8,
-        "question": "Siapa ustadzah yang mengajar kelas Iqra 3?",
-        "category": "ustadz",
-        "expected_keywords": ["pengajar", "menu", "sistem", "kelas"],
-        "is_in_domain": true
-    },
-    {
-        "id": 9,
-        "question": "Bagaimana cara admin mengelola jadwal belajar?",
-        "category": "admin",
-        "expected_keywords": ["admin", "jadwal", "menu", "edit", "ubah"],
-        "is_in_domain": true
-    },
-    {
-        "id": 10,
-        "question": "Jam berapa TPQ mulai kegiatan belajar?",
-        "category": "jadwal",
-        "expected_keywords": ["jadwal", "jam", "Ashar", "sore", "belajar"],
-        "is_in_domain": true
-    },
-    {
-        "id": 11,
-        "question": "Apa konsekuensi jika santri sering terlambat?",
-        "category": "aturan",
-        "expected_keywords": ["aturan", "teguran", "peringatan", "mendidik"],
-        "is_in_domain": true
-    },
-    {
-        "id": 12,
-        "question": "Bisakah saya mengakses sistem administrasi dari tablet?",
-        "category": "fitur_sistem",
-        "expected_keywords": ["sistem", "mobile", "tablet", "browser", "responsif"],
-        "is_in_domain": true
-    },
-    {
-        "id": 13,
-        "question": "Bagaimana prosedur jika anak mau pindah dari TPQ ini?",
-        "category": "data_santri",
-        "expected_keywords": ["pindah", "surat", "administrasi", "dokumen"],
-        "is_in_domain": true
-    },
-    {
-        "id": 14,
-        "question": "Apakah ada kelas untuk anak usia 4 tahun?",
-        "category": "informasi_umum",
-        "expected_keywords": ["usia", "tahun", "mendaftar", "Iqra"],
-        "is_in_domain": true
-    },
-    {
-        "id": 15,
-        "question": "Berapa jumlah pertemuan TPQ setiap minggu?",
-        "category": "jadwal",
-        "expected_keywords": ["pertemuan", "minggu", "hari", "Senin", "Jumat"],
-        "is_in_domain": true
-    },
-    {
-        "id": 16,
-        "question": "Apakah SPP bisa dibayar langsung untuk satu semester?",
-        "category": "pembayaran",
-        "expected_keywords": ["SPP", "bayar", "bulan", "sekaligus"],
-        "is_in_domain": true
-    },
-    {
-        "id": 17,
-        "question": "Bagaimana cara mendaftar program hafalan Al-Quran?",
-        "category": "informasi_umum",
-        "expected_keywords": ["tahfidz", "hafalan", "daftar", "administrasi", "seleksi"],
-        "is_in_domain": true
-    },
-    {
-        "id": 18,
-        "question": "Apakah wali santri bisa menunggu selama anak belajar?",
-        "category": "aturan",
-        "expected_keywords": ["wali", "menunggu", "area", "belajar"],
-        "is_in_domain": true
-    },
-    {
-        "id": 19,
-        "question": "Bagaimana proses jika password sistem saya hilang?",
-        "category": "fitur_sistem",
-        "expected_keywords": ["password", "reset", "lupa", "login", "email"],
-        "is_in_domain": true
-    },
-    {
-        "id": 20,
-        "question": "Apa target hafalan surat untuk kelas pemula?",
-        "category": "nilai",
-        "expected_keywords": ["hafalan", "surat", "target", "Iqra", "doa"],
-        "is_in_domain": true
-    },
-    {
-        "id": 21,
-        "question": "Kapan TPQ mengadakan acara wisuda santri?",
-        "category": "pengumuman",
-        "expected_keywords": ["wisuda", "khataman", "lulus", "menyelesaikan"],
-        "is_in_domain": true
-    },
-    {
-        "id": 22,
-        "question": "Apakah ada penilaian untuk adab dan akhlak santri?",
-        "category": "nilai",
-        "expected_keywords": ["penilaian", "sikap", "akhlak", "catatan"],
-        "is_in_domain": true
-    },
-    {
-        "id": 23,
-        "question": "Bagaimana sistem pengelompokan kelas di TPQ?",
-        "category": "informasi_umum",
-        "expected_keywords": ["kelas", "tingkat", "Iqra", "Al-Quran"],
-        "is_in_domain": true
-    },
-    {
-        "id": 24,
-        "question": "Siapa yang harus dihubungi untuk pengaduan?",
-        "category": "admin",
-        "expected_keywords": ["admin", "hubungi", "kontak", "administrasi"],
-        "is_in_domain": true
-    },
-    {
-        "id": 25,
-        "question": "Apakah ada perubahan jadwal saat Ramadhan?",
-        "category": "jadwal",
-        "expected_keywords": ["Ramadhan", "jadwal", "perubahan", "pagi", "siang"],
-        "is_in_domain": true
-    },
-    {
-        "id": 26,
-        "question": "Bagaimana cara menghitung pajak penghasilan?",
-        "category": "out_of_domain",
-        "expected_keywords": ["maaf", "TPQ", "di luar"],
-        "is_in_domain": false
-    },
-    {
-        "id": 27,
-        "question": "Tolong jelaskan teori relativitas Einstein",
-        "category": "out_of_domain",
-        "expected_keywords": ["maaf", "TPQ", "di luar"],
-        "is_in_domain": false
-    },
-    {
-        "id": 28,
-        "question": "Rekomendasi laptop untuk gaming dong",
-        "category": "out_of_domain",
-        "expected_keywords": ["maaf", "TPQ", "di luar"],
-        "is_in_domain": false
-    },
-    {
-        "id": 29,
-        "question": "Bagaimana cara merawat tanaman hias?",
-        "category": "out_of_domain",
-        "expected_keywords": ["maaf", "TPQ", "di luar"],
-        "is_in_domain": false
-    },
-    {
-        "id": 30,
-        "question": "Apa resep masakan padang yang enak?",
-        "category": "out_of_domain",
-        "expected_keywords": ["maaf", "TPQ", "di luar"],
-        "is_in_domain": false
-    }
+  {
+    "id": 1,
+    "question": "Apa persyaratan untuk mendaftar di TPQ?",
+    "category": "pendaftaran",
+    "expected_keywords": ["formulir", "pendaftaran", "akta", "foto", "kartu keluarga"],
+    "is_in_domain": true
+  },
+  {
+    "id": 2,
+    "question": "Bagaimana saya bisa mengecek kehadiran anak di TPQ?",
+    "category": "absensi",
+    "expected_keywords": ["absensi", "kehadiran", "menu", "sistem", "login"],
+    "is_in_domain": true
+  },
+  {
+    "id": 3,
+    "question": "Kapan nilai ujian semester akan keluar?",
+    "category": "nilai",
+    "expected_keywords": ["nilai", "ustadz", "input", "pengumuman"],
+    "is_in_domain": true
+  },
+  {
+    "id": 4,
+    "question": "Metode pembayaran apa saja yang tersedia untuk SPP?",
+    "category": "pembayaran",
+    "expected_keywords": ["langsung", "manual", "admin", "online"],
+    "is_in_domain": true
+  },
+  {
+    "id": 5,
+    "question": "Bagaimana cara melihat pengumuman terbaru dari TPQ?",
+    "category": "pengumuman",
+    "expected_keywords": ["pengumuman", "menu", "sistem", "administrasi"],
+    "is_in_domain": true
+  },
+  {
+    "id": 6,
+    "question": "Data apa saja yang bisa saya lihat di profil anak?",
+    "category": "data_santri",
+    "expected_keywords": ["profil", "biodata", "kelas", "santri"],
+    "is_in_domain": true
+  },
+  {
+    "id": 7,
+    "question": "Bagaimana mengubah nomor telepon yang terdaftar?",
+    "category": "wali_santri",
+    "expected_keywords": ["admin", "hubungi", "perbarui", "kontak"],
+    "is_in_domain": true
+  },
+  {
+    "id": 8,
+    "question": "Siapa ustadzah yang mengajar kelas Iqra 3?",
+    "category": "ustadz",
+    "expected_keywords": ["tidak", "tersedia", "hubungi", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 9,
+    "question": "Bagaimana cara admin mengelola jadwal belajar?",
+    "category": "admin",
+    "expected_keywords": ["tidak", "tersedia", "fitur", "pengumuman"],
+    "is_in_domain": true
+  },
+  {
+    "id": 10,
+    "question": "Jam berapa TPQ mulai kegiatan belajar?",
+    "category": "jadwal",
+    "expected_keywords": ["15.30", "Senin", "Sabtu", "WIB"],
+    "is_in_domain": true
+  },
+  {
+    "id": 11,
+    "question": "Apa konsekuensi jika santri sering terlambat?",
+    "category": "aturan",
+    "expected_keywords": ["tidak", "tersedia", "hubungi", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 12,
+    "question": "Bisakah saya mengakses sistem administrasi dari tablet?",
+    "category": "fitur_sistem",
+    "expected_keywords": ["sistem", "tablet", "browser", "akses"],
+    "is_in_domain": true
+  },
+  {
+    "id": 13,
+    "question": "Bagaimana prosedur jika anak mau pindah dari TPQ ini?",
+    "category": "data_santri",
+    "expected_keywords": ["tidak", "tersedia", "hubungi", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 14,
+    "question": "Apakah ada kelas untuk anak usia 4 tahun?",
+    "category": "informasi_umum",
+    "expected_keywords": ["usia", "4", "mendaftar", "tahun"],
+    "is_in_domain": true
+  },
+  {
+    "id": 15,
+    "question": "Berapa jumlah pertemuan TPQ setiap minggu?",
+    "category": "jadwal",
+    "expected_keywords": ["Senin", "Sabtu", "minggu", "hari"],
+    "is_in_domain": true
+  },
+  {
+    "id": 16,
+    "question": "Apakah SPP bisa dibayar langsung untuk satu semester?",
+    "category": "pembayaran",
+    "expected_keywords": ["SPP", "bayar", "admin", "hubungi"],
+    "is_in_domain": true
+  },
+  {
+    "id": 17,
+    "question": "Bagaimana cara mendaftar program hafalan Al-Quran?",
+    "category": "hafalan",
+    "expected_keywords": ["hafalan", "Juz 30", "program", "TPQ"],
+    "is_in_domain": true
+  },
+  {
+    "id": 18,
+    "question": "Apakah wali santri bisa menunggu selama anak belajar?",
+    "category": "aturan",
+    "expected_keywords": ["tidak", "tersedia", "hubungi", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 19,
+    "question": "Bagaimana proses jika password sistem saya hilang?",
+    "category": "fitur_sistem",
+    "expected_keywords": ["password", "reset", "lupa", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 20,
+    "question": "Apa target hafalan surat untuk kelas pemula?",
+    "category": "hafalan",
+    "expected_keywords": ["hafalan", "Juz 30", "target", "ustadz"],
+    "is_in_domain": true
+  },
+  {
+    "id": 21,
+    "question": "Kapan TPQ mengadakan acara wisuda santri?",
+    "category": "pengumuman",
+    "expected_keywords": ["pengumuman", "wisuda", "admin", "informasi"],
+    "is_in_domain": true
+  },
+  {
+    "id": 22,
+    "question": "Apakah ada penilaian untuk adab dan akhlak santri?",
+    "category": "nilai",
+    "expected_keywords": ["prestasi", "buku", "ustadz", "catatan"],
+    "is_in_domain": true
+  },
+  {
+    "id": 23,
+    "question": "Bagaimana sistem pengelompokan kelas di TPQ?",
+    "category": "informasi_umum",
+    "expected_keywords": ["tidak", "tersedia", "hubungi", "admin"],
+    "is_in_domain": true
+  },
+  {
+    "id": 24,
+    "question": "Siapa yang harus dihubungi untuk pengaduan?",
+    "category": "admin",
+    "expected_keywords": ["admin", "hubungi", "5981455", "kontak"],
+    "is_in_domain": true
+  },
+  {
+    "id": 25,
+    "question": "Apakah ada perubahan jadwal saat Ramadhan?",
+    "category": "jadwal",
+    "expected_keywords": ["pengumuman", "informasi", "hubungi", "jadwal"],
+    "is_in_domain": true
+  },
+  {
+    "id": 26,
+    "question": "Bagaimana cara menghitung pajak penghasilan?",
+    "category": "out_of_domain",
+    "expected_keywords": ["maaf", "TPQ", "luar", "cakupan"],
+    "is_in_domain": false
+  },
+  {
+    "id": 27,
+    "question": "Tolong jelaskan teori relativitas Einstein",
+    "category": "out_of_domain",
+    "expected_keywords": ["maaf", "TPQ", "luar", "cakupan"],
+    "is_in_domain": false
+  },
+  {
+    "id": 28,
+    "question": "Rekomendasi laptop untuk gaming dong",
+    "category": "out_of_domain",
+    "expected_keywords": ["maaf", "TPQ", "luar", "cakupan"],
+    "is_in_domain": false
+  },
+  {
+    "id": 29,
+    "question": "Bagaimana cara merawat tanaman hias?",
+    "category": "out_of_domain",
+    "expected_keywords": ["maaf", "TPQ", "luar", "cakupan"],
+    "is_in_domain": false
+  },
+  {
+    "id": 30,
+    "question": "Apa resep masakan padang yang enak?",
+    "category": "out_of_domain",
+    "expected_keywords": ["maaf", "TPQ", "luar", "cakupan"],
+    "is_in_domain": false
+  }
 ]
