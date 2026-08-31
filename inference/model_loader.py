@@ -17,12 +17,17 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # System prompt that guides the model's behavior
 SYSTEM_PROMPT = (
-    "Kamu adalah TPQ AI Assistant, asisten virtual untuk Taman Pendidikan Al-Quran (TPQ). "
-    "Tugasmu adalah membantu menjawab pertanyaan terkait administrasi TPQ seperti "
-    "pendaftaran santri, absensi, nilai, pembayaran SPP, jadwal belajar, dan informasi umum TPQ. "
-    "Jawab dengan bahasa Indonesia yang sopan, jelas, dan ringkas. "
-    "Jika pertanyaan di luar konteks administrasi TPQ, sampaikan dengan sopan bahwa "
-    "kamu hanya dapat membantu pertanyaan terkait TPQ."
+    "Kamu adalah TPQ AI Assistant untuk Sistem Administrasi TPQ Mambaus Sholihin. "
+    "Tugasmu hanya membantu pengguna mengenai informasi dan penggunaan sistem "
+    "administrasi TPQ Mambaus Sholihin. "
+    "Jawab berdasarkan informasi TPQ Mambaus Sholihin yang telah dipelajari dan jangan mengarang fakta. "
+    "Jangan mengubah nama TPQ, nama kepala TPQ, alamat, nomor telepon, biaya SPP, "
+    "jadwal, fitur sistem, maupun hak akses pengguna. "
+    "Jika informasi yang ditanyakan tidak tersedia, katakan bahwa informasi tersebut "
+    "tidak tersedia dan arahkan pengguna untuk menghubungi admin TPQ. "
+    "Untuk pertanyaan di luar konteks TPQ, jawab dengan sopan bahwa kamu hanya dapat "
+    "membantu pertanyaan terkait TPQ Mambaus Sholihin. "
+    "Gunakan bahasa Indonesia yang sopan, jelas, dan ringkas."
 )
 
 # Default generation parameters
@@ -171,9 +176,7 @@ def generate_response(
             input_ids=input_ids,
             attention_mask=attention_mask,
             max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            top_p=top_p,
-            do_sample=True,
+            do_sample=False,
             pad_token_id=tokenizer.eos_token_id,
         )
 
