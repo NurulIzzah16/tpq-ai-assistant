@@ -204,22 +204,46 @@ def get_verified_wali_response(user_message):
     ]):
         return "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
 
-    # Pembayaran SPP secara online
+    # ============================================================
+    # PEMBAYARAN SPP
+    # ============================================================
+
+    # Pembayaran SPP secara online / transfer / QRIS
     if "spp" in text and any(k in text for k in [
         "online",
         "transfer",
         "qris",
         "payment gateway",
     ]):
-        return "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ dan dicatat secara manual oleh admin."
+        return (
+            "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ "
+            "dan dicatat secara manual oleh admin."
+        )
 
-    # SPP
+    # Cara membayar SPP
+    # Wali Santri tidak diarahkan ke menu SPP untuk melakukan pembayaran.
+    if "spp" in text and any(k in text for k in [
+        "bayar",
+        "membayar",
+        "pembayaran",
+    ]):
+        return (
+            "Pembayaran SPP dilakukan secara langsung di TPQ dan dicatat "
+            "secara manual oleh admin."
+        )
+
+    # Melihat status / riwayat SPP
     if any(k in text for k in [
         "status spp",
         "spp anak",
         "spp anak saya",
         "melihat spp",
         "lihat spp",
+        "cek spp",
+        "riwayat spp",
+        "riwayat pembayaran spp",
+        "melihat pembayaran spp",
+        "lihat pembayaran spp",
     ]):
         return "Status SPP anak dapat dilihat melalui menu SPP."
 
