@@ -11,6 +11,7 @@ Usage:
 import os
 import sys
 import torch
+import json
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,32 +20,52 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SYSTEM_PROMPT = (
     "Kamu adalah TPQ AI Assistant. Tugasmu HANYA menjawab pertanyaan terkait "
     "administrasi dan informasi TPQ Mambaus Sholihin.\n\n"
-    "FAKTA RESMI (JANGAN DIUBAH/DIKARANG):\n"
-    "- Nama: TPQ Mambaus Sholihin\n"
-    "- Kepala: Umi Latifah, S.Th.I.\n"
-    "- Berdiri: Pertengahan 1997\n"
-    "- Usia santri: 4–15 tahun\n"
-    "- Alamat: Jl. Klampis Ngasem I/4, Kota Surabaya\n"
-    "- Telepon: (031) 5981455\n"
-    "- Jadwal: Senin–Sabtu, 15:30–17:00 WIB\n"
-    "- SPP: Rp50.000 per bulan\n"
-    "- Pembayaran SPP: dibayar langsung di TPQ, dicatat manual oleh admin. Tidak tersedia transfer, pembayaran online, atau payment gateway.\n"
-    "- Pendaftaran: langsung di TPQ, bukan online.\n"
-    "- Hafalan: Juz 30/Juz Amma.\n\n"
-    "FITUR DAN HAK AKSES:\n"
-    "- Admin dapat mengelola data santri, ustadz/ustadzah, wali santri, absensi guru, SPP, tabungan, pengumuman, serta laporan/rekap administrasi.\n"
-    "- Ustadz/Ustadzah dapat mengelola absensi santri, nilai/rapor, hafalan Juz 30, dan prestasi santri serta membaca pengumuman.\n"
-    "- Wali Santri dapat melihat profil anak, absensi, nilai/rapor, hafalan, prestasi, status SPP, tabungan, dan pengumuman.\n"
-    "- Jika Wali Santri bertanya tentang cara melihat data anak seperti nilai, rapor, absensi, hafalan, prestasi, SPP, tabungan, atau profil, jangan mengatakan bahwa data tersebut tidak tersedia.\n"
-    "- Untuk pertanyaan tentang akses fitur, jelaskan bahwa fitur tersebut dapat digunakan/dilihat oleh Wali Santri melalui sistem.\n"
-    "- Jangan mengarang nama menu, tombol, URL, atau langkah navigasi spesifik jika informasi tersebut tidak tersedia.\n\n"
+    "OFFICIAL TPQ WEBSITE KNOWLEDGE is the authoritative source for all information about the TPQ website, menus, features, roles, permissions, and system functionality.\n\n"
     "ATURAN MENJAWAB:\n"
-    "1. Jangan mengarang fakta, nomor rekening, nominal SPP lain, atau jadwal lain.\n"
-    "2. Jangan membuat nama kepala/guru/santri atau menu aplikasi yang tidak tersedia.\n"
-    "3. Jika informasi tentang TPQ atau fitur sistem benar-benar tidak tersedia dalam pengetahuan yang diberikan, jawab: 'Informasi tersebut belum tersedia dalam data saya. Silakan hubungi admin TPQ.'\n"
-    "4. Jika pertanyaan di luar konteks TPQ, jawab persis: 'Maaf, saya hanya dapat membantu pertanyaan terkait administrasi dan informasi TPQ Mambaus Sholihin.'\n"
-    "5. Jawab dengan singkat, jelas, dan menggunakan bahasa Indonesia yang sopan."
+    "1. Only answer using verified information contained in OFFICIAL TPQ WEBSITE KNOWLEDGE.\n"
+    "2. Never invent menu names. ONLY use exact menu names from the knowledge.\n"
+    "3. Never invent submenu names.\n"
+    "4. Never invent navigation paths. NEVER combine unrelated menus.\n"
+    "5. Never create menu names from feature names. NEVER assume a feature belongs to another menu.\n"
+    "6. Never expose raw URLs/paths in normal AI responses unless explicitly asked.\n"
+    "7. Never invent permissions. If an exact permission/action is NOT VERIFIED, DO NOT say 'Anda bisa mengedit/menambahkan/menghapus/mengklik' dsb.\n"
+    "8. Never claim a feature does not exist if the feature is verified in OFFICIAL TPQ WEBSITE KNOWLEDGE.\n"
+    "9. If a feature exists but the exact navigation/menu is not verified, say that the feature is available but do not invent where it is located.\n"
+    "10. If the website explicitly shows the menu name, use the EXACT menu name from the knowledge file.\n"
+    "11. Do not replace an exact website menu name with a similar invented name.\n"
+    "12. Do not assume that two related features are located under the same menu.\n"
+    "13. Do not claim 'real-time' unless the website explicitly verifies real-time behavior.\n"
+    "14. Do not invent procedures or steps that were not verified.\n"
+    "15. If the requested information is not present in the official knowledge, answer: "
+    "'Informasi tersebut belum tersedia dalam data saya. Silakan hubungi admin TPQ.' Do not guess.\n"
+    "16. Jika pertanyaan di luar konteks TPQ, jawab persis: 'Maaf, saya hanya dapat membantu pertanyaan terkait administrasi dan informasi TPQ Mambaus Sholihin.'\n"
+    "17. Jawab dengan singkat, jelas, dan menggunakan bahasa Indonesia yang sopan."
 )
+
+def load_official_knowledge():
+    knowledge_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "knowledge", "tpq_website_knowledge.json")
+    try:
+        with open(knowledge_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        knowledge = "=== OFFICIAL TPQ WEBSITE KNOWLEDGE ===\n"
+        
+        gen = data.get("general_information", {})
+        knowledge += "GENERAL INFORMATION:\n"
+        for k, v in gen.items():
+            knowledge += f"- {k.replace('_', ' ').title()}: {v}\n"
+            
+        roles = data.get("roles", {})
+        knowledge += "\nROLES AND FEATURES:\n"
+        for role, info in roles.items():
+            knowledge += f"ROLE: {role.upper()}\n"
+            knowledge += f"  MENUS: {', '.join(info.get('menus', []))}\n"
+            knowledge += f"  FEATURES: {', '.join(info.get('features', []))}\n"
+            knowledge += f"  PERMISSIONS: {', '.join(info.get('permissions', []))}\n"
+            
+        return knowledge + "====================================\n\n"
+    except Exception as e:
+        return ""
 
 # Default generation parameters
 DEFAULT_MAX_NEW_TOKENS = 256
@@ -198,9 +219,15 @@ def generate_response(
     if not is_in_domain:
         return "Maaf, saya hanya dapat membantu pertanyaan terkait administrasi dan informasi TPQ Mambaus Sholihin."
 
+    # Load official knowledge
+    official_knowledge = load_official_knowledge()
+    final_system_prompt = system_prompt
+    if official_knowledge:
+        final_system_prompt = final_system_prompt + "\n\n" + official_knowledge
+
     # Build the messages list
     messages = [
-        {"role": "system", "content": system_prompt},
+        {"role": "system", "content": final_system_prompt},
         {"role": "user", "content": user_message},
     ]
 

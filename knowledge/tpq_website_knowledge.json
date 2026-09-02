@@ -1,0 +1,85 @@
+{
+  "source": "TPQ Mambaus Sholihin Official Website",
+  "website": "https://tpqmambaussholihin.infinityfreeapp.com/",
+  "verified": true,
+  "general_information": {
+    "name": "TPQ Mambaus Sholihin",
+    "head": "Umi Latifah, S.Th.I.",
+    "address": "Jl. Klampis Ngasem I/4, Kota Surabaya",
+    "phone": "(031) 5981455",
+    "schedule": "Senin-Sabtu, 15:30-17:00 WIB",
+    "spp": "Rp50.000 per bulan",
+    "spp_payment_method": "Dibayar langsung di TPQ, dicatat manual oleh admin. Tidak tersedia transfer, pembayaran online, atau payment gateway.",
+    "registration": "Pendaftaran langsung di TPQ, bukan online.",
+    "hafalan_target": "Juz 30 / Juz Amma",
+    "student_age": "4-15 tahun",
+    "established": "Pertengahan 1997"
+  },
+  "roles": {
+    "admin": {
+      "menus": [
+        "Dashboard",
+        "Santri",
+        "Ustadz/Ustadzah",
+        "Kelas",
+        "Wali Santri",
+        "Ustadz/Ustadzah",
+        "SPP",
+        "Tabungan",
+        "Pengumuman"
+      ],
+      "features": [
+        "Tidak ada nested dropdown submenu yang terverifikasi.",
+        "Menu Santri, Ustadz/Ustadzah, Kelas, Wali Santri berada di bawah Kelola Data.",
+        "Menu Ustadz/Ustadzah berada di bawah Kelola Absensi.",
+        "Menu SPP dan Tabungan berada di bawah Kelola Pembayaran.",
+        "Menu Pengumuman berada di bawah Kelola Pengumuman."
+      ],
+      "permissions": [
+        "NOT FULLY VERIFIED"
+      ]
+    },
+    "ustadz_ustadzah": {
+      "menus": [
+        "📊 Dashboard",
+        "Absensi Santri",
+        "Nilai Santri",
+        "Hafalan Juz 30",
+        "Buku Prestasi",
+        "Rapor Santri",
+        "Pengumuman"
+      ],
+      "features": [
+        "Dashboard menampilkan: Santri Ajar, Kelas Ajar, Absensi Hari Ini."
+      ],
+      "permissions": [
+        "Create, Edit, Delete permissions NOT VERIFIED. DO NOT CLAIM THEM."
+      ]
+    },
+    "wali_santri": {
+      "menus": [
+        "Beranda",
+        "Absensi",
+        "Nilai & Rapor",
+        "Hafalan Juz 30",
+        "Buku Prestasi",
+        "Tabungan",
+        "SPP"
+      ],
+      "features": [
+        "Beranda menampilkan Data Santri dan Pengumuman.",
+        "Absensi menampilkan Riwayat kehadiran (No, Tanggal, Status Kehadiran).",
+        "Nilai & Rapor menampilkan form filter dan tabel nilai.",
+        "Hafalan Juz 30 menampilkan tabel setoran hafalan.",
+        "Buku Prestasi menampilkan tabel catatan prestasi.",
+        "Tabungan menampilkan tabel saldo tabungan.",
+        "SPP menampilkan tabel pembayaran SPP.",
+        "Profile dropdown menampilkan Nama Wali, Role, dan Logout."
+      ],
+      "permissions": [
+        "READ-ONLY untuk profil/data santri, absensi, nilai, hafalan, prestasi, tabungan, SPP, dan pengumuman.",
+        "TIDAK ADA fitur Create, Add, Edit, Delete."
+      ]
+    }
+  }
+}
