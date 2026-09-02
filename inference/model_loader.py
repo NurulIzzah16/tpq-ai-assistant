@@ -173,7 +173,7 @@ def get_verified_wali_response(user_message):
         "melihat rapor",
         "lihat rapor",
     ]):
-        return "Nilai dan rapor anak dapat dilihat melalui menu 📈 Nilai & Rapor."
+        return "Nilai dan rapor anak dapat dilihat melalui menu Nilai & Rapor."
 
     # Absensi
     if any(k in text for k in [
@@ -183,7 +183,7 @@ def get_verified_wali_response(user_message):
         "lihat absensi",
         "kehadiran anak",
     ]):
-        return "Absensi anak dapat dilihat melalui menu 📅 Absensi."
+        return "Absensi anak dapat dilihat melalui menu Absensi."
 
     # Hafalan
     if any(k in text for k in [
@@ -192,7 +192,7 @@ def get_verified_wali_response(user_message):
         "melihat hafalan",
         "lihat hafalan",
     ]):
-        return "Hafalan anak dapat dilihat melalui menu 📖 Hafalan Juz 30."
+        return "Hafalan anak dapat dilihat melalui menu Hafalan Juz 30."
 
     # Prestasi
     if any(k in text for k in [
@@ -201,7 +201,7 @@ def get_verified_wali_response(user_message):
         "melihat prestasi",
         "lihat prestasi",
     ]):
-        return "Prestasi anak dapat dilihat melalui menu 🏆 Buku Prestasi."
+        return "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
 
     # SPP
     if any(k in text for k in [
@@ -211,7 +211,7 @@ def get_verified_wali_response(user_message):
         "melihat spp",
         "lihat spp",
     ]):
-        return "Status SPP anak dapat dilihat melalui menu 💰 SPP."
+        return "Status SPP anak dapat dilihat melalui menu SPP."
 
     # Tabungan
     if any(k in text for k in [
@@ -220,7 +220,7 @@ def get_verified_wali_response(user_message):
         "melihat tabungan",
         "lihat tabungan",
     ]):
-        return "Tabungan anak dapat dilihat melalui menu 🏦 Tabungan."
+        return "Tabungan anak dapat dilihat melalui menu Tabungan."
 
     return None
 
