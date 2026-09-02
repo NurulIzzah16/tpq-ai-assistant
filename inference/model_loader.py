@@ -8,6 +8,7 @@ Usage:
     from inference.model_loader import load_model, generate_response
 """
 
+import contextlib
 import os
 import sys
 import torch
@@ -204,15 +205,11 @@ def get_verified_wali_response(user_message):
         return "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
 
     # Pembayaran SPP secara online
-    if any(k in text for k in [
-        "spp online",
-        "pembayaran spp online",
-        "bayar spp online",
-        "spp secara online",
-        "pembayaran spp secara online",
-        "spp melalui transfer",
-        "bayar spp melalui transfer",
-        "pembayaran spp melalui transfer",
+    if "spp" in text and any(k in text for k in [
+        "online",
+        "transfer",
+        "qris",
+        "payment gateway",
     ]):
         return "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ dan dicatat secara manual oleh admin."
 
