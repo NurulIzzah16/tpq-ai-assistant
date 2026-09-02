@@ -721,6 +721,14 @@ def get_verified_admin_response(user_message):
     # Specific Admin features FIRST
     # ------------------------------------------------------------
 
+    # SPP + Tabungan
+    if "spp" in text and "tabungan" in text:
+        return (
+            'Admin memiliki menu "SPP" dan "Tabungan" pada bagian '
+            '"Kelola Pembayaran" untuk mengelola pembayaran SPP dan '
+            "data tabungan santri."
+        )
+
     # SPP
     if "spp" in text:
         return (
