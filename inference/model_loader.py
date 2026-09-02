@@ -158,117 +158,269 @@ def load_model(model_path=None, model_name=None):
 
 def get_verified_wali_response(user_message):
     """
-    Return deterministic responses for verified Wali Santri navigation.
-    Returns None if the question does not match a verified navigation intent.
+    Return deterministic responses for verified Wali Santri navigation
+    and verified TPQ information.
+
+    Returns None if the question does not match a verified intent.
     """
-    text = user_message.lower()
-
-    # Nilai / Rapor
-    if any(k in text for k in [
-        "nilai anak",
-        "nilai anak saya",
-        "melihat nilai",
-        "lihat nilai",
-        "rapor anak",
-        "raport anak",
-        "melihat rapor",
-        "lihat rapor",
-    ]):
-        return "Nilai dan rapor anak dapat dilihat melalui menu Nilai & Rapor."
-
-    # Absensi
-    if any(k in text for k in [
-        "absensi anak",
-        "absen anak",
-        "melihat absensi",
-        "lihat absensi",
-        "kehadiran anak",
-    ]):
-        return "Absensi anak dapat dilihat melalui menu Absensi."
-
-    # Hafalan
-    if any(k in text for k in [
-        "hafalan anak",
-        "hafalan anak saya",
-        "melihat hafalan",
-        "lihat hafalan",
-    ]):
-        return "Hafalan anak dapat dilihat melalui menu Hafalan Juz 30."
-
-    # Prestasi
-    if any(k in text for k in [
-        "prestasi anak",
-        "prestasi anak saya",
-        "melihat prestasi",
-        "lihat prestasi",
-    ]):
-        return "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
+    text = user_message.lower().strip()
 
     # ============================================================
-    # PEMBAYARAN SPP
+    # SPP
     # ============================================================
 
-    # Pembayaran SPP secara online / transfer / QRIS
+    # ------------------------------------------------------------
+    # 1. MELIHAT STATUS / RIWAYAT SPP
+    # ------------------------------------------------------------
+    # Harus diperiksa SEBELUM intent "bayar", karena kata seperti
+    # "dibayar" dan "pembayaran" bisa muncul dalam pertanyaan
+    # tentang riwayat pembayaran.
+    # ------------------------------------------------------------
+    if "spp" in text and any(k in text for k in [
+        "status",
+        "melihat",
+        "lihat",
+        "cek",
+        "riwayat",
+        "sudah dibayar",
+        "yang sudah dibayar",
+        "telah dibayar",
+        "kapan dibayar",
+        "pembayaran yang sudah",
+        "riwayat pembayaran",
+        "data pembayaran",
+    ]):
+        return (
+            "Status dan riwayat pembayaran SPP anak dapat dilihat "
+            "melalui menu SPP."
+        )
+
+    # ------------------------------------------------------------
+    # 2. SPP ONLINE / TRANSFER / QRIS
+    # ------------------------------------------------------------
     if "spp" in text and any(k in text for k in [
         "online",
         "transfer",
         "qris",
         "payment gateway",
+        "transfer bank",
+        "rekening",
     ]):
         return (
             "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ "
             "dan dicatat secara manual oleh admin."
         )
 
-    # Cara membayar SPP
-    # Wali Santri tidak diarahkan ke menu SPP untuk melakukan pembayaran.
+    # ------------------------------------------------------------
+    # 3. CARA MEMBAYAR SPP
+    # ------------------------------------------------------------
     if "spp" in text and any(k in text for k in [
         "bayar",
         "membayar",
-        "pembayaran",
+        "cara bayar",
+        "cara membayar",
+        "ingin bayar",
+        "mau bayar",
+        "melakukan pembayaran",
     ]):
         return (
-            "Pembayaran SPP dilakukan secara langsung di TPQ dan dicatat "
-            "secara manual oleh admin."
+            "Pembayaran SPP dilakukan secara langsung di TPQ dan "
+            "dicatat secara manual oleh admin."
         )
 
-    # Melihat status / riwayat SPP
-    if any(k in text for k in [
-        "status spp",
-        "spp anak",
-        "spp anak saya",
-        "melihat spp",
-        "lihat spp",
-        "cek spp",
-        "riwayat spp",
-        "riwayat pembayaran spp",
-        "melihat pembayaran spp",
-        "lihat pembayaran spp",
-    ]):
-        return "Status SPP anak dapat dilihat melalui menu SPP."
+    # ============================================================
+    # NILAI & RAPOR
+    # ============================================================
 
-    # Tabungan
+    if any(k in text for k in [
+        "nilai anak",
+        "nilai anak saya",
+        "melihat nilai",
+        "lihat nilai",
+        "cek nilai",
+        "nilai santri",
+        "rapor anak",
+        "raport anak",
+        "melihat rapor",
+        "lihat rapor",
+        "cek rapor",
+        "rapor santri",
+    ]):
+        return (
+            "Nilai dan rapor anak dapat dilihat melalui menu "
+            "Nilai & Rapor."
+        )
+
+    # ------------------------------------------------------------
+    # Pertanyaan tentang mengubah / menambah / menghapus nilai
+    # ------------------------------------------------------------
+    if "nilai" in text and any(k in text for k in [
+        "ubah",
+        "mengubah",
+        "edit",
+        "mengedit",
+        "tambahkan",
+        "menambahkan",
+        "hapus",
+        "menghapus",
+        "perbaiki",
+        "memperbaiki",
+    ]):
+        return (
+            "Wali Santri dapat melihat nilai dan rapor melalui menu "
+            "Nilai & Rapor. Informasi mengenai perubahan atau "
+            "pengeditan nilai belum tersedia dalam data saya. "
+            "Silakan hubungi admin atau ustadz/ustadzah."
+        )
+
+    # ============================================================
+    # ABSENSI
+    # ============================================================
+
+    if any(k in text for k in [
+        "absensi anak",
+        "absen anak",
+        "melihat absensi",
+        "lihat absensi",
+        "cek absensi",
+        "kehadiran anak",
+        "kehadiran anak saya",
+        "riwayat kehadiran",
+    ]):
+        return "Absensi anak dapat dilihat melalui menu Absensi."
+
+    # ------------------------------------------------------------
+    # Perubahan data absensi
+    # ------------------------------------------------------------
+    if "absen" in text or "absensi" in text or "kehadiran" in text:
+        if any(k in text for k in [
+            "ubah",
+            "mengubah",
+            "edit",
+            "mengedit",
+            "tambahkan",
+            "menambahkan",
+            "hapus",
+            "menghapus",
+            "input",
+            "memasukkan",
+        ]):
+            return (
+                "Wali Santri dapat melihat riwayat absensi anak melalui "
+                "menu Absensi. Informasi mengenai penambahan atau "
+                "perubahan data absensi belum tersedia dalam data saya. "
+                "Silakan hubungi admin atau ustadz/ustadzah."
+            )
+
+    # ============================================================
+    # HAFALAN JUZ 30
+    # ============================================================
+
+    if any(k in text for k in [
+        "hafalan anak",
+        "hafalan anak saya",
+        "melihat hafalan",
+        "lihat hafalan",
+        "cek hafalan",
+        "hafalan juz 30",
+        "hafalan juz",
+        "riwayat hafalan",
+    ]):
+        return "Hafalan anak dapat dilihat melalui menu Hafalan Juz 30."
+
+    # ============================================================
+    # BUKU PRESTASI
+    # ============================================================
+
+    if any(k in text for k in [
+        "prestasi anak",
+        "prestasi anak saya",
+        "melihat prestasi",
+        "lihat prestasi",
+        "cek prestasi",
+        "buku prestasi",
+        "riwayat prestasi",
+    ]):
+        return "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
+
+    # ============================================================
+    # TABUNGAN
+    # ============================================================
+
     if any(k in text for k in [
         "tabungan anak",
         "tabungan anak saya",
         "melihat tabungan",
         "lihat tabungan",
+        "cek tabungan",
+        "saldo tabungan",
+        "riwayat tabungan",
     ]):
         return "Tabungan anak dapat dilihat melalui menu Tabungan."
 
-    # Fitur Wali Santri
+    # ============================================================
+    # PERKEMBANGAN ANAK — PERTANYAAN AMBIGU
+    # ============================================================
+
+    if "perkembangan" in text and any(k in text for k in [
+        "anak",
+        "anak saya",
+        "santri",
+    ]):
+        return (
+            "Informasi perkembangan anak dapat dilihat melalui "
+            "beberapa menu, seperti Absensi, Nilai & Rapor, "
+            "Hafalan Juz 30, dan Buku Prestasi."
+        )
+
+    # ============================================================
+    # FITUR WALI SANTRI
+    # ============================================================
+
     if any(k in text for k in [
         "fitur wali santri",
         "fitur wali",
+        "menu wali santri",
+        "menu wali",
         "yang dapat dilakukan wali santri",
         "yang bisa dilakukan wali santri",
         "apa saja yang dapat dilakukan oleh wali santri",
         "apa saja yang bisa dilakukan oleh wali santri",
+        "wali santri bisa apa",
+        "wali santri dapat apa",
     ]):
         return (
-            "Wali Santri dapat melihat profil santri, absensi, nilai dan rapor, "
-            "hafalan Juz 30, buku prestasi, tabungan, status SPP, dan pengumuman."
+            "Wali Santri dapat melihat profil santri, absensi, "
+            "nilai dan rapor, hafalan Juz 30, buku prestasi, "
+            "tabungan, status SPP, dan pengumuman."
         )
+
+    # ============================================================
+    # WALI MENCOBA MENGUBAH / MENAMBAH / MENGHAPUS DATA
+    # ============================================================
+
+    if "wali" in text and any(k in text for k in [
+        "ubah data",
+        "mengubah data",
+        "edit data",
+        "mengedit data",
+        "tambah data",
+        "menambah data",
+        "hapus data",
+        "menghapus data",
+        "input data",
+        "memasukkan data",
+    ]):
+        return (
+            "Wali Santri memiliki akses untuk melihat informasi "
+            "santri dan data terkait. Informasi mengenai perubahan "
+            "atau pengelolaan data belum tersedia dalam data saya. "
+            "Silakan hubungi admin TPQ."
+        )
+
+    # ============================================================
+    # DEFAULT
+    # ============================================================
 
     return None
 
