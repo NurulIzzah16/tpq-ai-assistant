@@ -26,7 +26,7 @@ class ChatResponse(BaseModel):
         ...,
         description="The AI assistant's response.",
         examples=[
-            "Wali santri dapat melihat nilai anak melalui menu Nilai setelah login ke sistem."
+            'Wali santri dapat melihat nilai dan rapor anak melalui menu "Nilai & Rapor".'
         ],
     )
 
