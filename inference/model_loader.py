@@ -706,6 +706,30 @@ def get_verified_admin_response(user_message):
     # 1. ADMIN ROLE / CONTEXT
     # ============================================================
 
+def get_verified_admin_response(user_message):
+    """
+    Deterministic routing for verified Admin intents.
+
+    Design:
+    - Requires explicit Admin context for single-feature intents.
+    - Combined SPP + Tabungan intent can be detected without explicit
+      "admin" wording because both are verified Admin management menus.
+    - Uses intent-first routing.
+    - Handles common wording variations.
+    - Combined intents are checked before single-feature intents.
+    - Only uses menus verified from the live website audit.
+    - Does not invent CRUD actions, procedures, URLs, or permissions.
+    """
+
+    text = user_message.lower().strip()
+
+    def contains_any(keywords):
+        return any(keyword in text for keyword in keywords)
+
+    # ============================================================
+    # 1. ADMIN ROLE / CONTEXT
+    # ============================================================
+
     admin_context = contains_any([
         "admin",
         "administrator",
@@ -716,9 +740,6 @@ def get_verified_admin_response(user_message):
         "pada akun admin",
         "sebagai seorang admin",
     ])
-
-    if not admin_context:
-        return None
 
     # ============================================================
     # 2. COMBINED PAYMENT INTENT
@@ -737,6 +758,9 @@ def get_verified_admin_response(user_message):
         "tabungan santri",
     ])
 
+    # SPP + Tabungan merupakan kombinasi menu pengelolaan Admin.
+    # Rule ini dicek sebelum admin_context karena pertanyaan dapat
+    # menyebut kedua fitur tanpa menyebut kata "admin".
     if has_spp and has_tabungan:
         return (
             'Admin memiliki menu "SPP" dan "Tabungan" pada bagian '
@@ -744,6 +768,10 @@ def get_verified_admin_response(user_message):
             'pembayaran SPP, sedangkan "Tabungan" digunakan untuk '
             "mengelola data tabungan santri."
         )
+
+    # Single-feature Admin intents tetap membutuhkan konteks Admin.
+    if not admin_context:
+        return None
 
     # ============================================================
     # 3. PENGUMUMAN / PENYAMPAIAN INFORMASI
