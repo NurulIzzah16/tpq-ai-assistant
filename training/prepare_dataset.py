@@ -25,9 +25,8 @@ from training.config import (
 )
 
 # Split ratios
-TRAIN_RATIO = 0.80
+TRAIN_RATIO = 0.90
 VALIDATION_RATIO = 0.10
-TEST_RATIO = 0.10
 
 
 def load_dataset(filepath):
@@ -131,20 +130,18 @@ def remove_duplicates(examples):
 
 
 def split_dataset(examples, seed=42):
-    """Split dataset into train/validation/test sets."""
+    """Split dataset into train/validation sets. Test set is kept separately."""
     random.seed(seed)
     shuffled = examples.copy()
     random.shuffle(shuffled)
 
     total = len(shuffled)
     train_end = int(total * TRAIN_RATIO)
-    val_end = train_end + int(total * VALIDATION_RATIO)
 
     train_data = shuffled[:train_end]
-    val_data = shuffled[train_end:val_end]
-    test_data = shuffled[val_end:]
+    val_data = shuffled[train_end:]
 
-    return train_data, val_data, test_data
+    return train_data, val_data
 
 
 def save_jsonl(data, filepath):
@@ -182,11 +179,10 @@ def main():
     print()
 
     # Step 4: Split dataset
-    print("[4/5] Splitting dataset (80/10/10)...")
-    train_data, val_data, test_data = split_dataset(examples, seed=SEED)
+    print("[4/4] Splitting dataset (90/10)...")
+    train_data, val_data = split_dataset(examples, seed=SEED)
     print(f"  Train: {len(train_data)} examples")
     print(f"  Validation: {len(val_data)} examples")
-    print(f"  Test: {len(test_data)} examples")
     print()
 
     # Step 5: Save splits
@@ -195,16 +191,12 @@ def main():
 
     train_path = os.path.join(project_root, TRAIN_DATASET_PATH.lstrip("./"))
     val_path = os.path.join(project_root, VALIDATION_DATASET_PATH.lstrip("./"))
-    test_path = os.path.join(project_root, TEST_DATASET_PATH.lstrip("./"))
 
     save_jsonl(train_data, train_path)
     print(f"  Saved: {train_path}")
 
     save_jsonl(val_data, val_path)
     print(f"  Saved: {val_path}")
-
-    save_jsonl(test_data, test_path)
-    print(f"  Saved: {test_path}")
 
     print()
     print("=" * 60)
@@ -213,7 +205,6 @@ def main():
     print(f"  Total: {len(examples)}")
     print(f"  Train: {len(train_data)}")
     print(f"  Validation: {len(val_data)}")
-    print(f"  Test: {len(test_data)}")
     print("=" * 60)
 
 
