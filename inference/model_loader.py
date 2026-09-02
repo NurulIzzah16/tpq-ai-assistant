@@ -31,10 +31,17 @@ SYSTEM_PROMPT = (
     "- Pembayaran SPP: dibayar langsung di TPQ, dicatat manual oleh admin. Tidak tersedia transfer, pembayaran online, atau payment gateway.\n"
     "- Pendaftaran: langsung di TPQ, bukan online.\n"
     "- Hafalan: Juz 30/Juz Amma.\n\n"
+    "FITUR DAN HAK AKSES:\n"
+    "- Admin dapat mengelola data santri, ustadz/ustadzah, wali santri, absensi guru, SPP, tabungan, pengumuman, serta laporan/rekap administrasi.\n"
+    "- Ustadz/Ustadzah dapat mengelola absensi santri, nilai/rapor, hafalan Juz 30, dan prestasi santri serta membaca pengumuman.\n"
+    "- Wali Santri dapat melihat profil anak, absensi, nilai/rapor, hafalan, prestasi, status SPP, tabungan, dan pengumuman.\n"
+    "- Jika Wali Santri bertanya tentang cara melihat data anak seperti nilai, rapor, absensi, hafalan, prestasi, SPP, tabungan, atau profil, jangan mengatakan bahwa data tersebut tidak tersedia.\n"
+    "- Untuk pertanyaan tentang akses fitur, jelaskan bahwa fitur tersebut dapat digunakan/dilihat oleh Wali Santri melalui sistem.\n"
+    "- Jangan mengarang nama menu, tombol, URL, atau langkah navigasi spesifik jika informasi tersebut tidak tersedia.\n\n"
     "ATURAN MENJAWAB:\n"
     "1. Jangan mengarang fakta, nomor rekening, nominal SPP lain, atau jadwal lain.\n"
     "2. Jangan membuat nama kepala/guru/santri atau menu aplikasi yang tidak tersedia.\n"
-    "3. Jika informasi tidak tersedia, jawab persis: 'Informasi tersebut belum tersedia dalam data saya. Silakan hubungi admin TPQ.'\n"
+    "3. Jika informasi tentang TPQ atau fitur sistem benar-benar tidak tersedia dalam pengetahuan yang diberikan, jawab: 'Informasi tersebut belum tersedia dalam data saya. Silakan hubungi admin TPQ.'\n"
     "4. Jika pertanyaan di luar konteks TPQ, jawab persis: 'Maaf, saya hanya dapat membantu pertanyaan terkait administrasi dan informasi TPQ Mambaus Sholihin.'\n"
     "5. Jawab dengan singkat, jelas, dan menggunakan bahasa Indonesia yang sopan."
 )
@@ -158,6 +165,38 @@ def generate_response(
         max_new_tokens = int(
             os.environ.get("MAX_NEW_TOKENS", DEFAULT_MAX_NEW_TOKENS)
         )
+
+    # Simple OOD (Out-of-Domain) detection
+    user_message_lower = user_message.lower()
+    tpq_keywords = [
+        "spp", "absen", "hadir", "izin", "sakit", "alfa",
+        "nilai", "rapor", "hafal", "prestasi", "daftar",
+        "santri", "wali", "ustadz", "guru", "admin", "pengumuman", "jadwal", "libur",
+        "tabung", "profil", "bayar", "tpq", "mambaus", "sholihin", "kepala", "umi latifah",
+        "alamat", "telepon", "kontak", "biaya", "login", "password", "akun",
+        "sistem", "juz", "laporan", "rekap", "kelas", "anak", "transfer", "rekening",
+        "data", "usia", "umur"
+    ]
+    
+    greetings = ["halo", "hai", "assalamualaikum", "selamat", "pagi", "siang", "sore", "malam", "test"]
+    
+    is_in_domain = False
+    
+    # Check if contains any TPQ keywords
+    for kw in tpq_keywords:
+        if kw in user_message_lower:
+            is_in_domain = True
+            break
+            
+    # Check if it's a short greeting message
+    if not is_in_domain and len(user_message_lower.split()) <= 3:
+        for g in greetings:
+            if g in user_message_lower:
+                is_in_domain = True
+                break
+                
+    if not is_in_domain:
+        return "Maaf, saya hanya dapat membantu pertanyaan terkait administrasi dan informasi TPQ Mambaus Sholihin."
 
     # Build the messages list
     messages = [
