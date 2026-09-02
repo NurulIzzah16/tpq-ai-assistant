@@ -155,73 +155,73 @@ def load_model(model_path=None, model_name=None):
     return model, tokenizer
 
     def get_verified_wali_response(user_message):
-        """
-        Return deterministic responses for verified Wali Santri navigation.
-        Returns None if the question does not match a verified navigation intent.
-        """
-        text = user_message.lower()
+    """
+    Return deterministic responses for verified Wali Santri navigation.
+    Returns None if the question does not match a verified navigation intent.
+    """
+    text = user_message.lower()
 
-        # Nilai / Rapor
-        if any(k in text for k in [
-            "nilai anak",
-            "nilai anak saya",
-            "melihat nilai",
-            "lihat nilai",
-            "rapor anak",
-            "raport anak",
-            "melihat rapor",
-            "lihat rapor",
-        ]):
-            return "Nilai dan rapor anak dapat dilihat melalui menu 📈 Nilai & Rapor."
+    # Nilai / Rapor
+    if any(k in text for k in [
+        "nilai anak",
+        "nilai anak saya",
+        "melihat nilai",
+        "lihat nilai",
+        "rapor anak",
+        "raport anak",
+        "melihat rapor",
+        "lihat rapor",
+    ]):
+        return "Nilai dan rapor anak dapat dilihat melalui menu 📈 Nilai & Rapor."
 
-        # Absensi
-        if any(k in text for k in [
-            "absensi anak",
-            "absen anak",
-            "melihat absensi",
-            "lihat absensi",
-            "kehadiran anak",
-        ]):
-            return "Absensi anak dapat dilihat melalui menu 📅 Absensi."
+    # Absensi
+    if any(k in text for k in [
+        "absensi anak",
+        "absen anak",
+        "melihat absensi",
+        "lihat absensi",
+        "kehadiran anak",
+    ]):
+        return "Absensi anak dapat dilihat melalui menu 📅 Absensi."
 
-        # Hafalan
-        if any(k in text for k in [
-            "hafalan anak",
-            "hafalan anak saya",
-            "melihat hafalan",
-            "lihat hafalan",
-        ]):
-            return "Hafalan anak dapat dilihat melalui menu 📖 Hafalan Juz 30."
+    # Hafalan
+    if any(k in text for k in [
+        "hafalan anak",
+        "hafalan anak saya",
+        "melihat hafalan",
+        "lihat hafalan",
+    ]):
+        return "Hafalan anak dapat dilihat melalui menu 📖 Hafalan Juz 30."
 
-        # Prestasi
-        if any(k in text for k in [
-            "prestasi anak",
-            "prestasi anak saya",
-            "melihat prestasi",
-            "lihat prestasi",
-        ]):
-            return "Prestasi anak dapat dilihat melalui menu 🏆 Buku Prestasi."
+    # Prestasi
+    if any(k in text for k in [
+        "prestasi anak",
+        "prestasi anak saya",
+        "melihat prestasi",
+        "lihat prestasi",
+    ]):
+        return "Prestasi anak dapat dilihat melalui menu 🏆 Buku Prestasi."
 
-        # SPP
-        if any(k in text for k in [
-            "status spp",
-            "spp anak",
-            "spp anak saya",
-            "melihat spp",
-            "lihat spp",
-        ]):
-            return "Status SPP anak dapat dilihat melalui menu 💰 SPP."
+    # SPP
+    if any(k in text for k in [
+        "status spp",
+        "spp anak",
+        "spp anak saya",
+        "melihat spp",
+        "lihat spp",
+    ]):
+        return "Status SPP anak dapat dilihat melalui menu 💰 SPP."
 
-        # Tabungan
-        if any(k in text for k in [
-            "tabungan anak",
-            "tabungan anak saya",
-            "melihat tabungan",
-            "lihat tabungan",
-        ]):
-            return "Tabungan anak dapat dilihat melalui menu 🏦 Tabungan."
+    # Tabungan
+    if any(k in text for k in [
+        "tabungan anak",
+        "tabungan anak saya",
+        "melihat tabungan",
+        "lihat tabungan",
+    ]):
+        return "Tabungan anak dapat dilihat melalui menu 🏦 Tabungan."
 
-        return None
+    return None
 
 def generate_response(
     model,
