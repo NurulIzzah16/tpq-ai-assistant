@@ -154,7 +154,8 @@ def load_model(model_path=None, model_name=None):
 
     return model, tokenizer
 
-    def get_verified_wali_response(user_message):
+
+def get_verified_wali_response(user_message):
     """
     Return deterministic responses for verified Wali Santri navigation.
     Returns None if the question does not match a verified navigation intent.
@@ -222,6 +223,7 @@ def load_model(model_path=None, model_name=None):
         return "Tabungan anak dapat dilihat melalui menu 🏦 Tabungan."
 
     return None
+
 
 def generate_response(
     model,
