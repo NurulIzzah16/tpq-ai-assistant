@@ -686,11 +686,14 @@ def get_verified_wali_response(user_message):
 
 def get_verified_admin_response(user_message):
     """
-    Deterministic responses for verified Admin intents.
+    Deterministic routing for verified Admin intents.
 
-    Rules:
-    - Only use menus verified from the live website audit.
-    - Do not invent buttons, submenus, URLs, or unverified CRUD permissions.
+    Design:
+    - Intent-first routing: specific features are checked before generic
+      "santri" detection.
+    - Uses role/context signals instead of relying on a single keyword.
+    - Only returns information verified from the live website audit.
+    - Does not invent CRUD buttons, procedures, or permissions.
     """
 
     text = user_message.lower().strip()
@@ -698,123 +701,48 @@ def get_verified_admin_response(user_message):
     def contains_any(keywords):
         return any(keyword in text for keyword in keywords)
 
-    # ============================================================
-    # ADMIN ROLE DETECTION
-    # ============================================================
+    # ------------------------------------------------------------
+    # Admin role/context
+    # ------------------------------------------------------------
 
-    if not contains_any([
+    admin_context = contains_any([
         "admin",
         "administrator",
         "akun admin",
         "sebagai admin",
-    ]):
+        "untuk admin",
+        "di akun admin",
+    ])
+
+    if not admin_context:
         return None
 
-    # ============================================================
-    # SANTRI
-    # ============================================================
+    # ------------------------------------------------------------
+    # Specific Admin features FIRST
+    # ------------------------------------------------------------
 
-    if contains_any([
-        "data santri",
-        "data anak",
-        "biodata santri",
-        "profil santri",
-        "santri",
-    ]):
-        if contains_any([
-            "ubah",
-            "mengubah",
-            "edit",
-            "mengedit",
-            "perbaiki",
-            "memperbaiki",
-            "koreksi",
-            "mengoreksi",
-            "ganti",
-            "mengganti",
-        ]):
-            return (
-                'Admin dapat menggunakan menu "Santri" pada bagian '
-                '"Kelola Data" untuk mengelola data santri. '
-                "Informasi mengenai tombol atau langkah spesifik "
-                "untuk perubahan data belum tersedia dalam data saya."
-            )
-
-        return (
-            'Admin memiliki menu "Santri" pada bagian "Kelola Data" '
-            "untuk mengelola data santri."
-        )
-
-    # ============================================================
-    # USTADZ / USTADZAH DATA
-    # ============================================================
-
-    if contains_any([
-        "data ustadz",
-        "data ustadzah",
-        "ustadz yang baru",
-        "ustadzah yang baru",
-        "mengelola ustadz",
-        "mengelola ustadzah",
-    ]):
-        return (
-            'Admin memiliki menu "Ustadz/Ustadzah" pada bagian '
-            '"Kelola Data" untuk mengelola data ustadz/ustadzah.'
-        )
-
-    # ============================================================
-    # WALI SANTRI DATA
-    # ============================================================
-
-    if contains_any([
-        "data wali",
-        "wali santri",
-        "mengelola wali",
-        "mengelola data wali",
-    ]):
-        return (
-            'Admin memiliki menu "Wali Santri" pada bagian '
-            '"Kelola Data" untuk mengelola data wali santri.'
-        )
-
-    # ============================================================
-    # KELAS
-    # ============================================================
-
-    if contains_any([
-        "data kelas",
-        "kelas santri",
-        "kelola kelas",
-        "mengelola kelas",
-    ]):
-        return (
-            'Admin memiliki menu "Kelas" pada bagian "Kelola Data".'
-        )
-
-    # ============================================================
     # SPP
-    # ============================================================
-
     if "spp" in text:
         return (
             'Admin memiliki menu "SPP" pada bagian "Kelola Pembayaran" '
             "untuk mengelola pembayaran SPP."
         )
 
-    # ============================================================
-    # TABUNGAN
-    # ============================================================
-
+    # Tabungan
     if "tabungan" in text:
         return (
             'Admin memiliki menu "Tabungan" pada bagian '
             '"Kelola Pembayaran" untuk mengelola data tabungan santri.'
         )
 
-    # ============================================================
-    # ABSENSI USTADZ / USTADZAH
-    # ============================================================
+    # Pengumuman
+    if "pengumuman" in text:
+        return (
+            'Admin memiliki menu "Pengumuman" pada bagian '
+            '"Kelola Pengumuman" untuk mengelola pengumuman.'
+        )
 
+    # Absensi Ustadz/Ustadzah
     if contains_any([
         "absensi ustadz",
         "absensi ustadzah",
@@ -828,19 +756,62 @@ def get_verified_admin_response(user_message):
             '"Kelola Absensi" untuk mengelola absensi ustadz/ustadzah.'
         )
 
-    # ============================================================
-    # PENGUMUMAN
-    # ============================================================
+    # ------------------------------------------------------------
+    # Admin data management
+    # ------------------------------------------------------------
 
-    if "pengumuman" in text:
+    if contains_any([
+        "data ustadz",
+        "data ustadzah",
+        "ustadz baru",
+        "ustadzah baru",
+        "mengelola ustadz",
+        "mengelola ustadzah",
+    ]):
         return (
-            'Admin memiliki menu "Pengumuman" pada bagian '
-            '"Kelola Pengumuman" untuk mengelola pengumuman.'
+            'Admin memiliki menu "Ustadz/Ustadzah" pada bagian '
+            '"Kelola Data" untuk mengelola data ustadz/ustadzah.'
         )
 
-    # ============================================================
-    # FITUR ADMIN
-    # ============================================================
+    if contains_any([
+        "data wali",
+        "mengelola wali",
+        "mengelola data wali",
+    ]):
+        return (
+            'Admin memiliki menu "Wali Santri" pada bagian '
+            '"Kelola Data" untuk mengelola data wali santri.'
+        )
+
+    if contains_any([
+        "data kelas",
+        "kelola kelas",
+        "mengelola kelas",
+    ]):
+        return (
+            'Admin memiliki menu "Kelas" pada bagian "Kelola Data".'
+        )
+
+    # ------------------------------------------------------------
+    # Generic Santri
+    # This MUST come after specific features above.
+    # ------------------------------------------------------------
+
+    if contains_any([
+        "data santri",
+        "biodata santri",
+        "profil santri",
+        "mengelola santri",
+        "mengelola data santri",
+    ]):
+        return (
+            'Admin memiliki menu "Santri" pada bagian "Kelola Data" '
+            "untuk mengelola data santri."
+        )
+
+    # ------------------------------------------------------------
+    # Admin feature list
+    # ------------------------------------------------------------
 
     if contains_any([
         "fitur admin",
@@ -853,9 +824,10 @@ def get_verified_admin_response(user_message):
         "apa yang dapat dilakukan admin",
     ]):
         return (
-            "Admin memiliki menu Dashboard, Santri, Ustadz/Ustadzah, "
-            "Kelas, Wali Santri, Ustadz/Ustadzah pada bagian "
-            "Kelola Absensi, SPP, Tabungan, dan Pengumuman."
+            'Admin memiliki menu "Dashboard", "Santri", '
+            '"Ustadz/Ustadzah", "Kelas", "Wali Santri", '
+            '"Ustadz/Ustadzah" pada bagian "Kelola Absensi", '
+            '"SPP", "Tabungan", dan "Pengumuman".'
         )
 
     return None
@@ -863,11 +835,14 @@ def get_verified_admin_response(user_message):
 
 def get_verified_ustadz_response(user_message):
     """
-    Deterministic responses for verified Ustadz/Ustadzah intents.
+    Deterministic routing for verified Ustadz/Ustadzah intents.
 
-    Rules:
-    - Only use menus verified from the live website audit.
-    - Do not invent CRUD permissions that were not verified.
+    Design:
+    - Recognizes explicit Ustadz/Ustadzah context.
+    - Also recognizes strong teaching/recording intents involving
+      santri, even when the user does not explicitly say "saya ustadz".
+    - Specific feature intent has priority over generic role detection.
+    - Never invents unverified CRUD permissions.
     """
 
     text = user_message.lower().strip()
@@ -875,116 +850,147 @@ def get_verified_ustadz_response(user_message):
     def contains_any(keywords):
         return any(keyword in text for keyword in keywords)
 
-    # ============================================================
-    # USTADZ / USTADZAH ROLE DETECTION
-    # ============================================================
+    # ------------------------------------------------------------
+    # Explicit role context
+    # ------------------------------------------------------------
 
-    if not contains_any([
+    explicit_ustadz = contains_any([
         "ustadz",
         "ustadzah",
-        "guru",
         "akun ustadz",
         "akun ustadzah",
         "seorang ustadz",
         "seorang ustadzah",
-    ]):
+        "sebagai ustadz",
+        "sebagai ustadzah",
+    ])
+
+    # ------------------------------------------------------------
+    # Strong teacher/action context
+    # ------------------------------------------------------------
+
+    teaching_action = contains_any([
+        "mencatat",
+        "mencatatkan",
+        "menginput",
+        "input",
+        "memasukkan",
+        "masukkan",
+        "menambahkan",
+        "tambahkan",
+        "mengelola",
+        "kelola",
+        "menilai",
+        "memberi nilai",
+        "setoran",
+    ])
+
+    santri_context = contains_any([
+        "santri",
+        "siswa",
+        "murid",
+    ])
+
+    strong_ustadz_context = teaching_action and santri_context
+
+    if not explicit_ustadz and not strong_ustadz_context:
         return None
 
-    # ============================================================
-    # ABSENSI SANTRI
-    # ============================================================
+    # ------------------------------------------------------------
+    # Specific features
+    # ------------------------------------------------------------
 
+    # Absensi
     if contains_any([
-        "absensi santri",
-        "absen santri",
-        "kehadiran santri",
-    ]):
+        "absensi",
+        "absen",
+        "kehadiran",
+    ]) and santri_context:
         return (
             'Ustadz/Ustadzah dapat menggunakan menu '
             '"Absensi Santri" untuk mengelola absensi santri.'
         )
 
-    # ============================================================
-    # NILAI SANTRI
-    # ============================================================
-
+    # Nilai + Rapor
     if contains_any([
-        "nilai santri",
-        "memasukkan nilai",
-        "input nilai",
-        "mencatat nilai",
-        "mengelola nilai",
+        "nilai",
+        "rapor",
+        "raport",
     ]):
+        if contains_any([
+            "dan rapor",
+            "& rapor",
+            "sekaligus rapor",
+            "kemudian melihat rapor",
+            "lalu melihat rapor",
+        ]):
+            return (
+                'Ustadz/Ustadzah memiliki menu "Nilai Santri" dan '
+                '"Rapor Santri" untuk mengelola nilai dan melihat '
+                "rapor santri."
+            )
+
+        if contains_any([
+            "rapor",
+            "raport",
+        ]) and not contains_any([
+            "nilai",
+        ]):
+            return (
+                'Ustadz/Ustadzah memiliki menu "Rapor Santri" '
+                "untuk melihat rapor santri."
+            )
+
         return (
             'Ustadz/Ustadzah memiliki menu "Nilai Santri" '
             "untuk mengelola nilai santri."
         )
 
-    # ============================================================
-    # RAPOR SANTRI
-    # ============================================================
-
-    if contains_any([
-        "rapor santri",
-        "raport santri",
-        "melihat rapor",
-        "melihat raport",
-    ]):
-        return (
-            'Ustadz/Ustadzah memiliki menu "Rapor Santri" '
-            "untuk melihat rapor santri."
-        )
-
-    # ============================================================
-    # NILAI + RAPOR
-    # ============================================================
-
-    if contains_any([
-        "nilai dan rapor",
-        "nilai & rapor",
-        "nilai sekaligus rapor",
-        "nilai kemudian rapor",
-    ]):
-        return (
-            'Ustadz/Ustadzah memiliki menu "Nilai Santri" dan '
-            '"Rapor Santri" untuk nilai dan rapor santri.'
-        )
-
-    # ============================================================
-    # HAFALAN
-    # ============================================================
-
+    # Hafalan
     if "hafalan" in text:
         return (
             'Ustadz/Ustadzah memiliki menu "Hafalan Juz 30" '
             "untuk mengelola hafalan santri."
         )
 
-    # ============================================================
-    # PRESTASI
-    # ============================================================
-
+    # Prestasi
     if "prestasi" in text:
         return (
             'Ustadz/Ustadzah memiliki menu "Buku Prestasi" '
             "untuk mengelola buku prestasi santri."
         )
 
-    # ============================================================
-    # PENGUMUMAN
-    # ============================================================
-
+    # Pengumuman
     if "pengumuman" in text:
         return (
             'Ustadz/Ustadzah memiliki menu "Pengumuman" '
             "untuk membaca pengumuman."
         )
 
-    # ============================================================
-    # FITUR USTADZ
-    # ============================================================
+    # ------------------------------------------------------------
+    # Explicit question about access compared with Admin
+    # ------------------------------------------------------------
 
-    if contains_any([
+    if explicit_ustadz and contains_any([
+        "seperti admin",
+        "sama seperti admin",
+        "akses admin",
+        "hak akses admin",
+        "menu yang sama",
+        "akses yang sama",
+    ]):
+        return (
+            "Tidak semua menu Admin tersedia pada akun "
+            "Ustadz/Ustadzah. Menu Ustadz/Ustadzah yang terverifikasi "
+            "meliputi Absensi Santri, Nilai Santri, Hafalan Juz 30, "
+            "Buku Prestasi, Rapor Santri, dan Pengumuman."
+        )
+
+    # ------------------------------------------------------------
+    # Feature list
+    # ------------------------------------------------------------
+
+    if explicit_ustadz and contains_any([
         "fitur ustadz",
         "fitur ustadzah",
         "menu ustadz",
@@ -1004,7 +1010,7 @@ def get_verified_ustadz_response(user_message):
 
     return None
 
-    
+
 def generate_response(
     model,
     tokenizer,
