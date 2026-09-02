@@ -160,22 +160,32 @@ def get_verified_wali_response(user_message):
     """
     Deterministic responses for verified Wali Santri intents.
 
-    Important:
-    - Wali Santri navigation only uses verified Wali menus.
-    - Payment and viewing payment history are treated as different intents.
-    - Management actions (edit/add/delete) are checked before view intents.
-    - No unverified menu, submenu, URL, or permission is invented.
+    Rules:
+    - Verified Wali menus only.
+    - Wali Santri is read-only based on verified audit.
+    - Never invent menus, submenus, URLs, buttons, permissions,
+      payment methods, or procedures.
+    - Management/editing intents have higher priority than view intents.
+    - Payment intent is separated from payment-history/view intent.
+    - Multi-feature questions are handled before single-feature rules.
     """
+
     text = user_message.lower().strip()
 
     # ============================================================
-    # HELPER
+    # HELPERS
     # ============================================================
 
     def contains_any(keywords):
         return any(keyword in text for keyword in keywords)
 
-    # Actions that imply modifying data.
+    def contains_all(keywords):
+        return all(keyword in text for keyword in keywords)
+
+    # ------------------------------------------------------------
+    # Detect whether the user is asking to modify/manage data
+    # ------------------------------------------------------------
+
     management_action = contains_any([
         "ubah",
         "mengubah",
@@ -183,69 +193,57 @@ def get_verified_wali_response(user_message):
         "mengedit",
         "perbaiki",
         "memperbaiki",
+        "koreksi",
+        "mengoreksi",
+        "betulkan",
+        "membetulkan",
+        "ganti",
+        "mengganti",
+        "hapus",
+        "menghapus",
         "tambah",
         "menambah",
         "tambahkan",
         "menambahkan",
-        "hapus",
-        "menghapus",
         "input",
+        "menginput",
+        "masukkan",
         "memasukkan",
+        "isi",
         "mengisi",
+        "mencatat",
+        "mencatatkan",
+        "kelola",
+        "mengelola",
+        "mengatur",
+        "atur",
     ])
 
     # ============================================================
-    # MULTI-FITUR WALI SANTRI
+    # 1. WALI VS ADMIN / AKSES PENGELOLAAN
     # ============================================================
 
-    feature_keywords = [
-        "absensi",
-        "absen",
-        "kehadiran",
-        "nilai",
-        "rapor",
-        "raport",
-        "hafalan",
-        "prestasi",
-        "tabungan",
-        "spp",
-    ]
-
-    mentioned_features = [
-        feature for feature in feature_keywords
-        if feature in text
-    ]
-
-    if len(set(mentioned_features)) >= 2:
-        if management_action:
-            return (
-                "Akun Wali Santri digunakan untuk melihat informasi "
-                "anak, termasuk absensi, nilai dan rapor, hafalan Juz 30, "
-                "buku prestasi, tabungan, dan status SPP. "
-                "Informasi mengenai penambahan, perubahan, atau "
-                "penghapusan data tersebut dari akun Wali Santri "
-                "belum tersedia dalam data saya. "
-                "Silakan hubungi admin atau ustadz/ustadzah."
-            )
-
-        return (
-            "Wali Santri dapat melihat informasi anak melalui menu "
-            "Absensi, Nilai & Rapor, Hafalan Juz 30, Buku Prestasi, "
-            "Tabungan, dan SPP sesuai jenis informasinya."
-        )
-
-    # ============================================================
-    # 1. WALI MENCOBA MENGELOLA DATA SEPERTI ADMIN
-    # ============================================================
-
-    if "wali" in text and contains_any([
-        "mengelola data",
-        "kelola data",
+    if contains_any([
         "seperti admin",
         "seperti akun admin",
         "sama seperti admin",
+        "seperti administrator",
         "akses admin",
-        "memiliki akses admin",
+        "akses administrator",
+        "hak akses admin",
+        "hak akses administrator",
+        "akun admin",
+        "akun administrator",
+        "mengelola data",
+        "kelola data",
+        "mengelola data anak",
+        "kelola data anak",
+        "mengatur data anak",
+        "mengedit data anak",
+        "mengubah data anak",
+        "memperbaiki data anak",
+        "menghapus data anak",
+        "menambah data anak",
     ]):
         return (
             "Tidak. Akun Wali Santri digunakan untuk melihat informasi "
@@ -255,22 +253,45 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 2. SPP - PERTANYAAN TENTANG MENU UNTUK MEMBAYAR
+    # 2. PERTANYAAN TENTANG EDIT DATA ANAK SECARA UMUM
+    # ============================================================
+
+    if contains_any([
+        "data anak",
+        "profil anak",
+        "informasi anak",
+        "biodata anak",
+    ]) and management_action:
+        return (
+            "Wali Santri dapat melihat informasi anak melalui akun "
+            "Wali Santri. Informasi mengenai perubahan, penambahan, "
+            "atau penghapusan data anak dari akun Wali Santri belum "
+            "tersedia dalam data saya. Silakan hubungi admin TPQ."
+        )
+
+    # ============================================================
+    # 3. SPP - PEMBAYARAN DARI MENU SPP
     # ============================================================
 
     if "spp" in text and contains_any([
-        "bisa membayar",
         "bisa bayar",
+        "bisa membayar",
         "bisa melakukan pembayaran",
-        "bisa untuk membayar",
         "bisa untuk bayar",
-        "untuk membayar",
+        "bisa untuk membayar",
         "untuk bayar",
+        "untuk membayar",
+        "digunakan untuk bayar",
         "digunakan untuk membayar",
         "digunakan untuk pembayaran",
-        "melakukan pembayaran dari",
         "bayar dari menu",
         "membayar dari menu",
+        "pembayaran dari menu",
+        "bayar melalui menu",
+        "membayar melalui menu",
+        "pembayaran melalui menu",
+        "tombol bayar",
+        "tombol pembayaran",
     ]):
         return (
             "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ "
@@ -280,7 +301,7 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 3. SPP - ONLINE / QRIS / TRANSFER
+    # 4. SPP - ONLINE / TRANSFER / QRIS
     # ============================================================
 
     if "spp" in text and contains_any([
@@ -288,50 +309,65 @@ def get_verified_wali_response(user_message):
         "qris",
         "transfer",
         "transfer bank",
+        "rekening",
+        "nomor rekening",
         "mobile banking",
         "m-banking",
         "mbanking",
         "payment gateway",
         "e-wallet",
         "dompet digital",
+        "ovo",
+        "dana",
+        "gopay",
+        "shopeepay",
     ]):
         return (
             "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ "
-            "dan dicatat secara manual oleh admin."
+            "dan dicatat secara manual oleh admin. Informasi mengenai "
+            "rekening, transfer, QRIS, atau pembayaran online belum "
+            "tersedia dalam data saya."
         )
 
     # ============================================================
-    # 4. SPP - MELIHAT STATUS / RIWAYAT PEMBAYARAN
+    # 5. SPP - LIHAT STATUS / RIWAYAT
     # ============================================================
-    # Diperiksa SEBELUM "bayar", karena pertanyaan seperti
-    # "SPP yang sudah dibayar" mengandung kata "dibayar".
 
-    if "spp" in text and contains_any([
-        "status",
-        "riwayat",
-        "sudah dibayar",
-        "telah dibayar",
-        "yang sudah dibayar",
-        "yang telah dibayar",
-        "kapan dibayar",
-        "kapan terakhir dibayar",
-        "terakhir dibayar",
-        "tanggal pembayaran",
-        "tanggal bayar",
-        "bulan yang sudah dibayar",
-        "pembayaran yang sudah",
-        "data pembayaran",
-        "cek pembayaran",
-        "cek spp",
-        "melihat pembayaran",
-        "lihat pembayaran",
-        "melihat spp",
-        "lihat spp",
-        "mengecek spp",
-        "mengecek pembayaran",
-        "mengetahui pembayaran",
-        "mengetahui status",
-    ]):
+    spp_view_intent = (
+        "spp" in text
+        and contains_any([
+            "status",
+            "riwayat",
+            "sudah dibayar",
+            "telah dibayar",
+            "yang sudah dibayar",
+            "yang telah dibayar",
+            "kapan dibayar",
+            "kapan terakhir dibayar",
+            "terakhir dibayar",
+            "tanggal pembayaran",
+            "tanggal bayar",
+            "bulan yang sudah dibayar",
+            "pembayaran yang sudah",
+            "data pembayaran",
+            "cek pembayaran",
+            "cek spp",
+            "melihat pembayaran",
+            "lihat pembayaran",
+            "melihat spp",
+            "lihat spp",
+            "mengecek spp",
+            "mengecek pembayaran",
+            "mengetahui pembayaran",
+            "mengetahui status",
+            "spp sudah",
+            "spp belum",
+            "lunas",
+            "belum lunas",
+        ])
+    )
+
+    if spp_view_intent:
         if management_action:
             return (
                 "Menu SPP pada akun Wali Santri digunakan untuk melihat "
@@ -346,7 +382,7 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 5. SPP - MELAKUKAN PEMBAYARAN
+    # 6. SPP - MELAKUKAN PEMBAYARAN
     # ============================================================
 
     if "spp" in text and contains_any([
@@ -361,6 +397,7 @@ def get_verified_wali_response(user_message):
         "mau membayar",
         "harus bayar",
         "melakukan pembayaran",
+        "bayarkan",
     ]):
         return (
             "Pembayaran SPP dilakukan secara langsung di TPQ dan "
@@ -368,113 +405,101 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 6. NILAI / RAPOR
+    # 7. MULTI-FEATURE WALI
+    # ============================================================
+
+    feature_groups = {
+        "absensi": [
+            "absensi",
+            "absen",
+            "kehadiran",
+        ],
+        "nilai": [
+            "nilai",
+            "rapor",
+            "raport",
+        ],
+        "hafalan": [
+            "hafalan",
+        ],
+        "prestasi": [
+            "prestasi",
+        ],
+        "tabungan": [
+            "tabungan",
+        ],
+        "spp": [
+            "spp",
+        ],
+        "pengumuman": [
+            "pengumuman",
+        ],
+    }
+
+    mentioned_features = []
+
+    for feature, keywords in feature_groups.items():
+        if contains_any(keywords):
+            mentioned_features.append(feature)
+
+    # ------------------------------------------------------------
+    # Multiple Wali features
+    # ------------------------------------------------------------
+
+    if len(mentioned_features) >= 2:
+
+        if management_action:
+            return (
+                "Akun Wali Santri digunakan untuk melihat informasi "
+                "anak, termasuk absensi, nilai dan rapor, hafalan "
+                "Juz 30, buku prestasi, tabungan, status SPP, dan "
+                "pengumuman. Informasi mengenai penambahan, "
+                "perubahan, atau penghapusan data tersebut dari "
+                "akun Wali Santri belum tersedia dalam data saya. "
+                "Silakan hubungi admin atau ustadz/ustadzah."
+            )
+
+        menu_names = []
+
+        if "absensi" in mentioned_features:
+            menu_names.append("Absensi")
+
+        if "nilai" in mentioned_features:
+            menu_names.append("Nilai & Rapor")
+
+        if "hafalan" in mentioned_features:
+            menu_names.append("Hafalan Juz 30")
+
+        if "prestasi" in mentioned_features:
+            menu_names.append("Buku Prestasi")
+
+        if "tabungan" in mentioned_features:
+            menu_names.append("Tabungan")
+
+        if "spp" in mentioned_features:
+            menu_names.append("SPP")
+
+        if "pengumuman" in mentioned_features:
+            menu_names.append("Pengumuman")
+
+        return (
+            "Wali Santri dapat melihat informasi anak melalui "
+            "menu " + ", ".join(menu_names) + "."
+        )
+
+    # ============================================================
+    # 8. PERKEMBANGAN ANAK
     # ============================================================
 
     if contains_any([
-        "nilai",
-        "rapor",
-        "raport",
-    ]):
-        # Modification intent MUST take priority.
-        if management_action:
-            return (
-                "Wali Santri dapat melihat nilai dan rapor melalui "
-                "menu Nilai & Rapor. Informasi mengenai perubahan, "
-                "penambahan, atau penghapusan nilai belum tersedia "
-                "dalam data saya. Silakan hubungi admin atau "
-                "ustadz/ustadzah."
-            )
-
-        return (
-            "Nilai dan rapor anak dapat dilihat melalui menu "
-            "Nilai & Rapor."
-        )
-
-    # ============================================================
-    # 7. ABSENSI
-    # ============================================================
-
-    if contains_any([
-        "absensi",
-        "absen",
-        "kehadiran",
-    ]) and contains_any([
-        "anak",
-        "anak saya",
-        "santri",
-    ]):
-        if management_action:
-            return (
-                "Wali Santri dapat melihat riwayat absensi anak "
-                "melalui menu Absensi. Informasi mengenai "
-                "penambahan, perubahan, atau penghapusan data "
-                "absensi belum tersedia dalam data saya. "
-                "Silakan hubungi admin atau ustadz/ustadzah."
-            )
-
-        return "Absensi anak dapat dilihat melalui menu Absensi."
-
-    # ============================================================
-    # 8. HAFALAN JUZ 30
-    # ============================================================
-
-    if "hafalan" in text:
-        if management_action:
-            return (
-                "Wali Santri dapat melihat hafalan anak melalui "
-                "menu Hafalan Juz 30. Informasi mengenai "
-                "penambahan, perubahan, atau penghapusan data "
-                "hafalan belum tersedia dalam data saya. "
-                "Silakan hubungi admin atau ustadz/ustadzah."
-            )
-
-        return (
-            "Hafalan anak dapat dilihat melalui menu Hafalan Juz 30."
-        )
-
-    # ============================================================
-    # 9. BUKU PRESTASI
-    # ============================================================
-
-    if "prestasi" in text:
-        if management_action:
-            return (
-                "Wali Santri dapat melihat prestasi anak melalui "
-                "menu Buku Prestasi. Informasi mengenai "
-                "penambahan, perubahan, atau penghapusan data "
-                "prestasi belum tersedia dalam data saya. "
-                "Silakan hubungi admin atau ustadz/ustadzah."
-            )
-
-        return (
-            "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
-        )
-
-    # ============================================================
-    # 10. TABUNGAN
-    # ============================================================
-
-    if "tabungan" in text:
-        if management_action:
-            return (
-                "Wali Santri dapat melihat informasi tabungan anak "
-                "melalui menu Tabungan. Informasi mengenai "
-                "perubahan atau penambahan saldo dari akun Wali "
-                "Santri belum tersedia dalam data saya. "
-                "Silakan hubungi admin TPQ."
-            )
-
-        return "Tabungan anak dapat dilihat melalui menu Tabungan."
-
-    # ============================================================
-    # 11. PERKEMBANGAN ANAK
-    # ============================================================
-
-    if "perkembangan" in text and contains_any([
-        "anak",
-        "anak saya",
-        "santri",
+        "perkembangan anak",
+        "perkembangan anak saya",
+        "perkembangan santri",
+        "memantau perkembangan",
+        "memantau perkembangan anak",
+        "monitor perkembangan",
+        "melihat perkembangan",
+        "melihat perkembangan anak",
     ]):
         return (
             "Informasi perkembangan anak dapat dilihat melalui "
@@ -483,7 +508,127 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 12. FITUR / MENU WALI SANTRI
+    # 9. NILAI / RAPOR
+    # ============================================================
+
+    if contains_any([
+        "nilai",
+        "rapor",
+        "raport",
+    ]):
+        if management_action:
+            return (
+                "Wali Santri dapat melihat nilai dan rapor melalui "
+                "menu Nilai & Rapor. Informasi mengenai perubahan, "
+                "penambahan, atau penghapusan nilai dari akun Wali "
+                "Santri belum tersedia dalam data saya. Silakan "
+                "hubungi admin atau ustadz/ustadzah."
+            )
+
+        return (
+            "Nilai dan rapor anak dapat dilihat melalui menu "
+            "Nilai & Rapor."
+        )
+
+    # ============================================================
+    # 10. ABSENSI
+    # ============================================================
+
+    if contains_any([
+        "absensi",
+        "absen",
+        "kehadiran",
+    ]):
+        if management_action:
+            return (
+                "Wali Santri dapat melihat riwayat absensi anak "
+                "melalui menu Absensi. Informasi mengenai "
+                "penambahan, perubahan, atau penghapusan data "
+                "absensi dari akun Wali Santri belum tersedia "
+                "dalam data saya. Silakan hubungi admin atau "
+                "ustadz/ustadzah."
+            )
+
+        return (
+            "Absensi anak dapat dilihat melalui menu Absensi."
+        )
+
+    # ============================================================
+    # 11. HAFALAN
+    # ============================================================
+
+    if "hafalan" in text:
+        if management_action:
+            return (
+                "Wali Santri dapat melihat hafalan anak melalui "
+                "menu Hafalan Juz 30. Informasi mengenai "
+                "penambahan, perubahan, atau penghapusan data "
+                "hafalan dari akun Wali Santri belum tersedia "
+                "dalam data saya. Silakan hubungi admin atau "
+                "ustadz/ustadzah."
+            )
+
+        return (
+            "Hafalan anak dapat dilihat melalui menu Hafalan Juz 30."
+        )
+
+    # ============================================================
+    # 12. PRESTASI
+    # ============================================================
+
+    if "prestasi" in text:
+        if management_action:
+            return (
+                "Wali Santri dapat melihat prestasi anak melalui "
+                "menu Buku Prestasi. Informasi mengenai "
+                "penambahan, perubahan, atau penghapusan data "
+                "prestasi dari akun Wali Santri belum tersedia "
+                "dalam data saya. Silakan hubungi admin atau "
+                "ustadz/ustadzah."
+            )
+
+        return (
+            "Prestasi anak dapat dilihat melalui menu Buku Prestasi."
+        )
+
+    # ============================================================
+    # 13. TABUNGAN
+    # ============================================================
+
+    if "tabungan" in text:
+        if management_action:
+            return (
+                "Wali Santri dapat melihat informasi tabungan anak "
+                "melalui menu Tabungan. Informasi mengenai "
+                "penambahan atau perubahan saldo dari akun Wali "
+                "Santri belum tersedia dalam data saya. Silakan "
+                "hubungi admin TPQ."
+            )
+
+        return (
+            "Tabungan anak dapat dilihat melalui menu Tabungan."
+        )
+
+    # ============================================================
+    # 14. PENGUMUMAN
+    # ============================================================
+
+    if "pengumuman" in text:
+        if management_action:
+            return (
+                "Wali Santri dapat membaca pengumuman melalui menu "
+                "Pengumuman. Informasi mengenai penambahan, "
+                "perubahan, atau penghapusan pengumuman dari akun "
+                "Wali Santri belum tersedia dalam data saya. "
+                "Silakan hubungi admin TPQ."
+            )
+
+        return (
+            "Pengumuman dapat dibaca melalui menu Pengumuman."
+        )
+
+    # ============================================================
+    # 15. FITUR / MENU WALI SANTRI
     # ============================================================
 
     if contains_any([
@@ -491,10 +636,13 @@ def get_verified_wali_response(user_message):
         "fitur wali",
         "menu wali santri",
         "menu wali",
+        "fitur yang dimiliki wali",
+        "fitur yang tersedia untuk wali",
         "yang dapat dilakukan wali santri",
         "yang bisa dilakukan wali santri",
-        "apa saja yang dapat dilakukan oleh wali santri",
-        "apa saja yang bisa dilakukan oleh wali santri",
+        "yang dapat dilakukan oleh wali santri",
+        "yang bisa dilakukan oleh wali santri",
+        "apa saja yang dapat dilakukan wali",
         "apa saja yang bisa dilakukan wali",
         "wali santri bisa apa",
         "wali santri dapat apa",
@@ -507,7 +655,30 @@ def get_verified_wali_response(user_message):
         )
 
     # ============================================================
-    # 13. DEFAULT
+    # 16. PERTANYAAN UMUM TENTANG AKSES WALI
+    # ============================================================
+
+    if contains_any([
+        "akses wali",
+        "hak akses wali",
+        "hak wali",
+        "kewenangan wali",
+        "wewenang wali",
+        "wali boleh apa",
+        "wali bisa melakukan apa",
+        "wali dapat melakukan apa",
+        "apa yang bisa dilakukan wali",
+        "apa yang dapat dilakukan wali",
+    ]):
+        return (
+            "Akun Wali Santri digunakan untuk melihat informasi "
+            "santri dan data terkait, seperti absensi, nilai dan "
+            "rapor, hafalan Juz 30, buku prestasi, tabungan, "
+            "status SPP, dan pengumuman."
+        )
+
+    # ============================================================
+    # 17. DEFAULT
     # ============================================================
 
     return None
