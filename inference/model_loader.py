@@ -213,6 +213,16 @@ def get_verified_wali_response(user_message):
     ]):
         return "Status SPP anak dapat dilihat melalui menu SPP."
 
+    # Pembayaran SPP secara online
+    if any(k in text for k in [
+        "spp online",
+        "pembayaran spp online",
+        "bayar spp online",
+        "spp secara online",
+        "pembayaran spp secara online",
+    ]):
+        return "Tidak. Pembayaran SPP dilakukan secara langsung di TPQ dan dicatat secara manual oleh admin."
+
     # Tabungan
     if any(k in text for k in [
         "tabungan anak",
@@ -222,8 +232,22 @@ def get_verified_wali_response(user_message):
     ]):
         return "Tabungan anak dapat dilihat melalui menu Tabungan."
 
-    return None
+    # Fitur Wali Santri
+    if any(k in text for k in [
+        "fitur wali santri",
+        "fitur wali",
+        "yang dapat dilakukan wali santri",
+        "yang bisa dilakukan wali santri",
+        "apa saja yang dapat dilakukan oleh wali santri",
+        "apa saja yang bisa dilakukan oleh wali santri",
+    ]):
+        return (
+            "Wali Santri dapat melihat profil santri, absensi, nilai dan rapor, "
+            "hafalan Juz 30, buku prestasi, tabungan, status SPP, dan pengumuman."
+        )
 
+    return None
+    
 
 def generate_response(
     model,
