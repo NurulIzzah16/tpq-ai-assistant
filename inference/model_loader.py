@@ -195,6 +195,46 @@ def get_verified_wali_response(user_message):
     ])
 
     # ============================================================
+    # MULTI-FITUR WALI SANTRI
+    # ============================================================
+
+    feature_keywords = [
+        "absensi",
+        "absen",
+        "kehadiran",
+        "nilai",
+        "rapor",
+        "raport",
+        "hafalan",
+        "prestasi",
+        "tabungan",
+        "spp",
+    ]
+
+    mentioned_features = [
+        feature for feature in feature_keywords
+        if feature in text
+    ]
+
+    if len(set(mentioned_features)) >= 2:
+        if management_action:
+            return (
+                "Akun Wali Santri digunakan untuk melihat informasi "
+                "anak, termasuk absensi, nilai dan rapor, hafalan Juz 30, "
+                "buku prestasi, tabungan, dan status SPP. "
+                "Informasi mengenai penambahan, perubahan, atau "
+                "penghapusan data tersebut dari akun Wali Santri "
+                "belum tersedia dalam data saya. "
+                "Silakan hubungi admin atau ustadz/ustadzah."
+            )
+
+        return (
+            "Wali Santri dapat melihat informasi anak melalui menu "
+            "Absensi, Nilai & Rapor, Hafalan Juz 30, Buku Prestasi, "
+            "Tabungan, dan SPP sesuai jenis informasinya."
+        )
+
+    # ============================================================
     # 1. WALI MENCOBA MENGELOLA DATA SEPERTI ADMIN
     # ============================================================
 
