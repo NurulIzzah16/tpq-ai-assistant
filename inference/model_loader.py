@@ -689,11 +689,12 @@ def get_verified_admin_response(user_message):
     Deterministic routing for verified Admin intents.
 
     Design:
-    - Intent-first routing: specific features are checked before generic
-      "santri" detection.
-    - Uses role/context signals instead of relying on a single keyword.
-    - Only returns information verified from the live website audit.
-    - Does not invent CRUD buttons, procedures, or permissions.
+    - Requires explicit Admin context.
+    - Uses intent-first routing.
+    - Handles common wording variations.
+    - Combined intents are checked before single-feature intents.
+    - Only uses menus verified from the live website audit.
+    - Does not invent CRUD actions, procedures, URLs, or permissions.
     """
 
     text = user_message.lower().strip()
@@ -701,9 +702,9 @@ def get_verified_admin_response(user_message):
     def contains_any(keywords):
         return any(keyword in text for keyword in keywords)
 
-    # ------------------------------------------------------------
-    # Admin role/context
-    # ------------------------------------------------------------
+    # ============================================================
+    # 1. ADMIN ROLE / CONTEXT
+    # ============================================================
 
     admin_context = contains_any([
         "admin",
@@ -712,45 +713,88 @@ def get_verified_admin_response(user_message):
         "sebagai admin",
         "untuk admin",
         "di akun admin",
+        "pada akun admin",
+        "sebagai seorang admin",
     ])
 
     if not admin_context:
         return None
 
-    # ------------------------------------------------------------
-    # Specific Admin features FIRST
-    # ------------------------------------------------------------
+    # ============================================================
+    # 2. COMBINED PAYMENT INTENT
+    # ============================================================
 
-    # SPP + Tabungan
-    if "spp" in text and "tabungan" in text:
+    has_spp = contains_any([
+        "spp",
+        "pembayaran spp",
+        "bayar spp",
+    ])
+
+    has_tabungan = contains_any([
+        "tabungan",
+        "uang tabungan",
+        "saldo tabungan",
+        "tabungan santri",
+    ])
+
+    if has_spp and has_tabungan:
         return (
             'Admin memiliki menu "SPP" dan "Tabungan" pada bagian '
-            '"Kelola Pembayaran" untuk mengelola pembayaran SPP dan '
-            "data tabungan santri."
+            '"Kelola Pembayaran". Menu "SPP" digunakan untuk mengelola '
+            'pembayaran SPP, sedangkan "Tabungan" digunakan untuk '
+            "mengelola data tabungan santri."
         )
 
-    # SPP
-    if "spp" in text:
-        return (
-            'Admin memiliki menu "SPP" pada bagian "Kelola Pembayaran" '
-            "untuk mengelola pembayaran SPP."
-        )
+    # ============================================================
+    # 3. PENGUMUMAN / PENYAMPAIAN INFORMASI
+    # ============================================================
 
-    # Tabungan
-    if "tabungan" in text:
-        return (
-            'Admin memiliki menu "Tabungan" pada bagian '
-            '"Kelola Pembayaran" untuk mengelola data tabungan santri.'
-        )
-
-    # Pengumuman
-    if "pengumuman" in text:
+    if contains_any([
+        "pengumuman",
+        "mengumumkan",
+        "membuat pengumuman",
+        "mengelola pengumuman",
+        "menyampaikan pengumuman",
+        "membuat informasi",
+        "menyampaikan informasi",
+        "memberikan informasi",
+        "menyebarkan informasi",
+        "menyampaikan berita",
+        "memberikan berita",
+        "informasi kepada pengguna",
+        "informasi kepada seluruh pengguna",
+        "informasi untuk pengguna",
+        "informasi untuk seluruh pengguna",
+    ]):
         return (
             'Admin memiliki menu "Pengumuman" pada bagian '
             '"Kelola Pengumuman" untuk mengelola pengumuman.'
         )
 
-    # Absensi Ustadz/Ustadzah
+    # ============================================================
+    # 4. SPP
+    # ============================================================
+
+    if has_spp:
+        return (
+            'Admin memiliki menu "SPP" pada bagian "Kelola Pembayaran" '
+            "untuk mengelola pembayaran SPP."
+        )
+
+    # ============================================================
+    # 5. TABUNGAN
+    # ============================================================
+
+    if has_tabungan:
+        return (
+            'Admin memiliki menu "Tabungan" pada bagian '
+            '"Kelola Pembayaran" untuk mengelola data tabungan santri.'
+        )
+
+    # ============================================================
+    # 6. ABSENSI USTADZ / USTADZAH
+    # ============================================================
+
     if contains_any([
         "absensi ustadz",
         "absensi ustadzah",
@@ -758,68 +802,124 @@ def get_verified_admin_response(user_message):
         "absen ustadzah",
         "kehadiran ustadz",
         "kehadiran ustadzah",
+        "absensi guru",
+        "absen guru",
+        "kehadiran guru",
     ]):
         return (
             'Admin memiliki menu "Ustadz/Ustadzah" pada bagian '
             '"Kelola Absensi" untuk mengelola absensi ustadz/ustadzah.'
         )
 
-    # ------------------------------------------------------------
-    # Admin data management
-    # ------------------------------------------------------------
+    # ============================================================
+    # 7. DATA USTADZ / USTADZAH
+    # ============================================================
 
     if contains_any([
         "data ustadz",
         "data ustadzah",
+        "data guru",
+        "data pengajar",
         "ustadz baru",
         "ustadzah baru",
+        "guru baru",
+        "pengajar baru",
+        "mendaftarkan ustadz",
+        "mendaftarkan ustadzah",
+        "mendaftarkan guru",
+        "mendaftarkan pengajar",
         "mengelola ustadz",
         "mengelola ustadzah",
+        "mengelola guru",
+        "mengelola pengajar",
     ]):
         return (
             'Admin memiliki menu "Ustadz/Ustadzah" pada bagian '
             '"Kelola Data" untuk mengelola data ustadz/ustadzah.'
         )
 
+    # ============================================================
+    # 8. DATA WALI SANTRI
+    # ============================================================
+
     if contains_any([
         "data wali",
+        "data wali santri",
+        "wali santri",
         "mengelola wali",
         "mengelola data wali",
+        "mendaftarkan wali",
+        "data orang tua",
+        "data orangtua",
+        "orang tua santri",
+        "orangtua santri",
     ]):
         return (
             'Admin memiliki menu "Wali Santri" pada bagian '
             '"Kelola Data" untuk mengelola data wali santri.'
         )
 
+    # ============================================================
+    # 9. DATA KELAS
+    # ============================================================
+
     if contains_any([
         "data kelas",
         "kelola kelas",
         "mengelola kelas",
+        "mengatur kelas",
+        "pengelolaan kelas",
+        "kelas santri",
     ]):
         return (
             'Admin memiliki menu "Kelas" pada bagian "Kelola Data".'
         )
 
-    # ------------------------------------------------------------
-    # Generic Santri
-    # This MUST come after specific features above.
-    # ------------------------------------------------------------
+    # ============================================================
+    # 10. DATA SANTRI
+    #
+    # "siswa", "murid", dan "anak" digunakan sebagai variasi
+    # bahasa ketika konteksnya jelas merupakan pengelolaan data.
+    # ============================================================
 
     if contains_any([
         "data santri",
+        "data siswa",
+        "data murid",
+        "data anak",
+        "data peserta didik",
+        "santri yang terdaftar",
+        "siswa yang terdaftar",
+        "murid yang terdaftar",
+        "peserta didik yang terdaftar",
+        "daftar santri",
+        "daftar siswa",
+        "daftar murid",
         "biodata santri",
+        "biodata siswa",
+        "biodata murid",
         "profil santri",
+        "profil siswa",
+        "profil murid",
         "mengelola santri",
+        "mengelola siswa",
+        "mengelola murid",
         "mengelola data santri",
+        "mengelola data siswa",
+        "mengelola data murid",
+        "mendaftarkan santri",
+        "mendaftarkan siswa",
+        "mendaftarkan murid",
+        "mendaftarkan peserta didik",
     ]):
         return (
             'Admin memiliki menu "Santri" pada bagian "Kelola Data" '
             "untuk mengelola data santri."
         )
 
-    # ------------------------------------------------------------
-    # Admin feature list
-    # ------------------------------------------------------------
+    # ============================================================
+    # 11. GENERAL ADMIN MENU / FEATURE LIST
+    # ============================================================
 
     if contains_any([
         "fitur admin",
@@ -828,8 +928,17 @@ def get_verified_admin_response(user_message):
         "menu akun admin",
         "admin bisa apa",
         "admin dapat apa",
+        "admin bisa melakukan apa",
+        "admin dapat melakukan apa",
         "apa yang bisa dilakukan admin",
         "apa yang dapat dilakukan admin",
+        "apa saja yang bisa dilakukan admin",
+        "apa saja yang dapat dilakukan admin",
+        "menu apa saja untuk admin",
+        "menu apa saja yang tersedia untuk admin",
+        "fitur apa saja untuk admin",
+        "fitur yang tersedia untuk admin",
+        "menu yang tersedia untuk admin",
     ]):
         return (
             'Admin memiliki menu "Dashboard", "Santri", '
